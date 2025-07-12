@@ -34,7 +34,9 @@ import { ShopifyModule } from './modules/shopify/shopify.module';
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
         entities: [Shop, ScanHistory],
-        synchronize: configService.get('NODE_ENV') === 'development',
+        synchronize: false, // Disabled to use migrations instead
+        migrations: ['dist/migrations/*.js'],
+        migrationsRun: false,
         logging: configService.get('NODE_ENV') === 'development',
       }),
       inject: [ConfigService],
