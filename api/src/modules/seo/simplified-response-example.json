@@ -1,0 +1,71 @@
+[
+  {
+    "productId": "gid://shopify/Product/8882869141756",
+    "title": "RYZE Gums Frosty Mint Flavour - 2mg",
+    "handle": "ryze-gums-frosty-mint-flavour-2mg",
+    "suggestions": [
+      {
+        "id": "title-gid://shopify/Product/8882869141756",
+        "type": "title",
+        "priority": "high",
+        "score": 20,
+        "field": "seo.title",
+        "current": "RYZE Sugar free Gums Frosty Mint Flavor - 2mg",
+        "suggested": "RYZE Sugar-Free Gums Frosty Mint Flavor - 2mg | Stop Smoking Aid",
+        "reason": "Title length and keyword optimization",
+        "impact": "Higher CTR and search visibility"
+      },
+      {
+        "id": "meta-desc-gid://shopify/Product/8882869141756",
+        "type": "meta-description",
+        "priority": "high",
+        "score": 18,
+        "field": "seo.description",
+        "current": "Buy RYZE Sugar Free Gums Frosty Mint Flavor- 2mg to help you stop smoking.",
+        "suggested": "Stop Smoking Aid: RYZE Sugar-Free Gums Frosty Mint Flavor- 2mg. Satisfy Nicotine Cravings with Minty Burst. Order Now!",
+        "reason": "Description length, relevance, and call-to-action",
+        "impact": "Improved CTR and search relevance"
+      },
+      {
+        "id": "alt-text-gid://shopify/ProductImage/43948513820924",
+        "type": "alt-text",
+        "priority": "high",
+        "score": 14,
+        "field": "images.altText",
+        "current": "",
+        "suggested": "RYZE Frosty Mint Nicotine Gum 2mg package showing product details",
+        "reason": "Missing alt text hurts accessibility and SEO",
+        "impact": "Improves image search visibility and accessibility compliance"
+      }
+    ]
+  },
+  {
+    "productId": "gid://shopify/Product/8882869240060",
+    "title": "RYZE Gums Fresh Fennel Flavor - 2mg",
+    "handle": "ryze-gums-fresh-fennel-flavor-2mg",
+    "suggestions": [
+      {
+        "id": "title-gid://shopify/Product/8882869240060",
+        "type": "title",
+        "priority": "high",
+        "score": 20,
+        "field": "seo.title",
+        "current": "",
+        "suggested": "RYZE Gum Fresh Fennel Flavour - 2mg | Nicotine Craving Relief",
+        "reason": "Missing SEO title reduces search engine visibility",
+        "impact": "SEO titles are crucial for search rankings and click-through rates"
+      },
+      {
+        "id": "meta-desc-gid://shopify/Product/8882869240060",
+        "type": "meta-description",
+        "priority": "high",
+        "score": 18,
+        "field": "seo.description",
+        "current": "Get RYZE Gum Fresh Fennel Flavour- 2mg to help you in curb smoking.",
+        "suggested": "Experience Nicotine Craving Relief with RYZE Gum Fresh Fennel Flavour - 2mg. Satisfy your cravings with our intense fennel flavor gum designed to help you quit smoking.",
+        "reason": "Rephrased for clarity, added call-to-action, and improved relevance",
+        "impact": "Higher click-through rates and improved search engine ranking"
+      }
+    ]
+  }
+]

@@ -5,6 +5,7 @@ import { Shop } from '../../entities/shop.entity';
 import { ScanHistory } from '../../entities/scan-history.entity';
 import { ShopifyService } from '../shopify/shopify.service';
 import { ApplySuggestionDto } from '../../dto/seo.dto';
+import { SimplifiedSeoAnalysisService } from './simplified-seo-analysis.service';
 
 @Injectable()
 export class SeoService {
@@ -16,6 +17,7 @@ export class SeoService {
     @InjectRepository(ScanHistory)
     private scanHistoryRepository: Repository<ScanHistory>,
     private shopifyService: ShopifyService,
+    private simplifiedSeoAnalysisService: SimplifiedSeoAnalysisService,
   ) {}
 
   async scanEntireStore(shopDomain: string) {
@@ -174,14 +176,25 @@ export class SeoService {
   }
 
   private async analyzeProductsForSEO(products: any[]) {
-    // TODO: Implement actual SEO analysis logic
-    // This is a placeholder that generates mock suggestions
-    return products.map(product => ({
-      productId: product.id,
-      title: product.title,
-      handle: product.handle,
-      suggestions: this.generateMockSuggestions(product),
-    }));
+    try {
+      this.logger.log(`Starting SEO analysis for ${products.length} products`);
+      
+      // Use the SimplifiedSeoAnalysisService to analyze products with LLM
+      const analysisResults = await this.simplifiedSeoAnalysisService.analyzeProductsSimplified(products);
+      
+      this.logger.log(`Completed SEO analysis for ${products.length} products`);
+      return analysisResults;
+    } catch (error) {
+      this.logger.error('Error in SEO analysis, falling back to mock suggestions', error);
+      
+      // Fallback to mock suggestions if LLM analysis fails
+      return products.map(product => ({
+        productId: product.id,
+        title: product.title,
+        handle: product.handle,
+        suggestions: this.generateMockSuggestions(product),
+      }));
+    }
   }
 
   private generateMockSuggestions(product: any) {

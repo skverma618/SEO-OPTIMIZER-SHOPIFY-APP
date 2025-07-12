@@ -1,0 +1,407 @@
+{
+  "products": [
+    {
+      "id": "gid://shopify/Product/8882869141756",
+      "title": "RYZE Gums Frosty Mint Flavour - 2mg",
+      "handle": "ryze-gum-frosty-mint-2mg",
+      "status": "ACTIVE",
+      "vendor": "Ryze Fertin",
+      "description": "RYZE is a sugar free gum that helps manage your cravings with its controlled release formula. Easy on throat and gentle for jaw, Ryze will be your perfect companion at all testing moments. Caution:- Do not consume the product if found cracked/melted/damaged. Storage:- Store in a cool & dry place. Protect from direct sunlight. Keep out of sight and reach of children. Shelf Life 24 Months. Check expiry date before consuming.",
+      "metafields": {
+        "edges": [
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/32337325490428",
+              "namespace": "global",
+              "key": "title_tag",
+              "value": "RYZE Sugar free Gums Frosty Mint Flavor - 2mg",
+              "type": "string"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/32337325523196",
+              "namespace": "global",
+              "key": "description_tag",
+              "value": "Buy RYZE Sugar Free Gums Frosty Mint Flavor- 2mg to help you stop smoking. Try this nicotine gum to satisfy your nicotine cravings with a burst of minty flavor.",
+              "type": "string"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/32497485480188",
+              "namespace": "judgeme",
+              "key": "badge",
+              "value": "<div style='display:none' class='jdgm-prev-badge' data-average-rating='4.75' data-number-of-reviews='12' data-number-of-questions='0'> <span class='jdgm-prev-badge__stars' data-score='4.75' tabindex='0' aria-label='4.75 stars' role='button'> <span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span> </span> <span class='jdgm-prev-badge__text'> 12 reviews </span> </div>",
+              "type": "string"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/32497485512956",
+              "namespace": "judgeme",
+              "key": "widget",
+              "value": "<div class='jdgm-rev-widg' data-updated-at='2025-06-05T08:42:01Z' data-average-rating='4.75' data-number-of-reviews='12' data-number-of-questions='0'> <style class='jdgm-temp-hiding-style'>.jdgm-rev-widg{ display: none }</style> <div class='jdgm-rev-widg__header'> <h2 class='jdgm-rev-widg__title'>Customer Reviews</h2>  <div class='jdgm-rev-widg__summary'> <div class='jdgm-rev-widg__summary-stars' aria-label='Average rating is 4.75 stars' role='img'> <span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span> </div> <div class='jdgm-rev-widg__summary-text'>Based on 12 reviews</div> </div> <a style='display: none' href='#' class='jdgm-write-rev-link' role='button'>Write a review</a> <div class='jdgm-histogram jdgm-temp-hidden'>  <div class='jdgm-histogram__row' data-rating='5' data-frequency='10' data-percentage='83'>  <div class='jdgm-histogram__star' role='button' aria-label=\"83% (10) reviews with 5 star rating\"  tabindex='0' ><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span></div> <div class='jdgm-histogram__bar'> <div class='jdgm-histogram__bar-content' style='width: 83%;'> </div> </div> <div class='jdgm-histogram__percentage'>83%</div> <div class='jdgm-histogram__frequency'>(10)</div> </div>  <div class='jdgm-histogram__row' data-rating='4' data-frequency='1' data-percentage='8'>  <div class='jdgm-histogram__star' role='button' aria-label=\"8% (1) reviews with 4 star rating\"  tabindex='0' ><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--off'></span></div> <div class='jdgm-histogram__bar'> <div class='jdgm-histogram__bar-content' style='width: 8%;'> </div> </div> <div class='jdgm-histogram__percentage'>8%</div> <div class='jdgm-histogram__frequency'>(1)</div> </div>  <div class='jdgm-histogram__row' data-rating='3' data-frequency='1' data-percentage='8'>  <div class='jdgm-histogram__star' role='button' aria-label=\"8% (1) reviews with 3 star rating\"  tabindex='0' ><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span></div> <div class='jdgm-histogram__bar'> <div class='jdgm-histogram__bar-content' style='width: 8%;'> </div> </div> <div class='jdgm-histogram__percentage'>8%</div> <div class='jdgm-histogram__frequency'>(1)</div> </div>  <div class='jdgm-histogram__row' data-rating='2' data-frequency='0' data-percentage='0'>  <div class='jdgm-histogram__star' role='button' aria-label=\"0% (0) reviews with 2 star rating\"  tabindex='0' ><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span></div> <div class='jdgm-histogram__bar'> <div class='jdgm-histogram__bar-content' style='width: 0%;'> </div> </div> <div class='jdgm-histogram__percentage'>0%</div> <div class='jdgm-histogram__frequency'>(0)</div> </div>  <div class='jdgm-histogram__row' data-rating='1' data-frequency='0' data-percentage='0'>  <div class='jdgm-histogram__star' role='button' aria-label=\"0% (0) reviews with 1 star rating\"  tabindex='0' ><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span></div> <div class='jdgm-histogram__bar'> <div class='jdgm-histogram__bar-content' style='width: 0%;'> </div> </div> <div class='jdgm-histogram__percentage'>0%</div> <div class='jdgm-histogram__frequency'>(0)</div> </div>  <div class='jdgm-histogram__row jdgm-histogram__clear-filter' data-rating=null tabindex='0'></div> </div>     <div class='jdgm-rev-widg__sort-wrapper'></div> </div> <div class='jdgm-rev-widg__body'>  <div class='jdgm-rev-widg__reviews'><div class='jdgm-rev jdgm-divider-top' data-verified-buyer='false' data-review-id='d079f62c-aa6b-42d8-9486-8ba6a76eb3a0' data-review-language='' data-product-title='RYZE Gums Frosty Mint Flavour - 2mg' data-product-url='/products/ryze-gum-frosty-mint-2mg' data-thumb-up-count='0' data-thumb-down-count='0'> <div class='jdgm-rev__header'>  <div class='jdgm-rev__icon' > a </div>  <span class='jdgm-rev__rating' data-score='5' tabindex='0' aria-label='5 star review' role='img'> <span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span> </span> <span class='jdgm-rev__timestamp jdgm-spinner' data-content='2025-06-05 08:39:31 UTC'></span>    <div class='jdgm-rev__br'></div> <span class='jdgm-rev__buyer-badge-wrapper'>  </span> <span class='jdgm-rev__author-wrapper'> <span class='jdgm-rev__author'>ankit</span> <span class='jdgm-rev__location' >  </span>  </span> </div> <div class='jdgm-rev__content'>  <div class='jdgm-rev__custom-form'>  </div> <b class='jdgm-rev__title'>gud product</b> <div class='jdgm-rev__body'><p>easy to use</p></div> <div class='jdgm-rev__pics'>  <a class='jdgm-rev__pic-link jdgm--loading' target='_blank' rel='nofollow' href='https://judgeme.imgix.net/shopryze/1749112771__download__original.jpeg?auto=format' data-mfp-src='https://judgeme.imgix.net/shopryze/1749112771__download__original.jpeg?auto=format&amp;w=1024' aria-label='Link to user picture 1'> <img class='jdgm-rev__pic-img' alt='User picture' data-src='https://judgeme.imgix.net/shopryze/1749112771__download__original.jpeg?auto=format&amp;w=160'> </a>  </div> <div class='jdgm-rev__vids'>   </div> <div class='jdgm-rev__transparency-badge-wrapper'>  </div> </div> <div class='jdgm-rev__actions'> <div class='jdgm-rev__social'></div> <div class='jdgm-rev__votes'></div> </div> <div class='jdgm-rev__reply'>  </div> </div><div class='jdgm-rev jdgm-divider-top' data-verified-buyer='false' data-review-id='801a79e9-a810-4063-b6a2-5c37939fc91a' data-review-language='' data-product-title='RYZE Gums Frosty Mint Flavour - 2mg' data-product-url='/products/ryze-gum-frosty-mint-2mg' data-thumb-up-count='0' data-thumb-down-count='0'> <div class='jdgm-rev__header'>  <div class='jdgm-rev__icon' > a </div>  <span class='jdgm-rev__rating' data-score='3' tabindex='0' aria-label='3 star review' role='img'> <span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span> </span> <span class='jdgm-rev__timestamp jdgm-spinner' data-content='2025-06-04 11:11:05 UTC'></span>    <div class='jdgm-rev__br'></div> <span class='jdgm-rev__buyer-badge-wrapper'>  </span> <span class='jdgm-rev__author-wrapper'> <span class='jdgm-rev__author'>ankit</span> <span class='jdgm-rev__location' >  </span>  </span> </div> <div class='jdgm-rev__content'>  <div class='jdgm-rev__custom-form'>  </div> <b class='jdgm-rev__title'>gud product</b> <div class='jdgm-rev__body'><p>easy to use</p></div> <div class='jdgm-rev__pics'>  </div> <div class='jdgm-rev__vids'>   </div> <div class='jdgm-rev__transparency-badge-wrapper'>  </div> </div> <div class='jdgm-rev__actions'> <div class='jdgm-rev__social'></div> <div class='jdgm-rev__votes'></div> </div> <div class='jdgm-rev__reply'>  </div> </div><div class='jdgm-rev jdgm-divider-top' data-verified-buyer='false' data-review-id='0e85e9af-d465-4808-bdfb-4fff91728d7d' data-review-language='' data-product-title='RYZE Gums Frosty Mint Flavour - 2mg' data-product-url='/products/ryze-gum-frosty-mint-2mg' data-thumb-up-count='0' data-thumb-down-count='0'> <div class='jdgm-rev__header'>  <div class='jdgm-rev__icon' > J </div>  <span class='jdgm-rev__rating' data-score='5' tabindex='0' aria-label='5 star review' role='img'> <span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span> </span> <span class='jdgm-rev__timestamp jdgm-spinner' data-content='2024-02-15 07:46:28 UTC'></span>    <div class='jdgm-rev__br'></div> <span class='jdgm-rev__buyer-badge-wrapper'>  </span> <span class='jdgm-rev__author-wrapper'> <span class='jdgm-rev__author'>Jayant Tyagi</span> <span class='jdgm-rev__location' >  </span>  </span> </div> <div class='jdgm-rev__content'>  <div class='jdgm-rev__custom-form'>  </div> <b class='jdgm-rev__title'>Refreshing</b> <div class='jdgm-rev__body'><p>the frostly mint is so refreshing. better than any other nicotine gum</p></div> <div class='jdgm-rev__pics'>  </div> <div class='jdgm-rev__vids'>   </div> <div class='jdgm-rev__transparency-badge-wrapper'>  </div> </div> <div class='jdgm-rev__actions'> <div class='jdgm-rev__social'></div> <div class='jdgm-rev__votes'></div> </div> <div class='jdgm-rev__reply'>  </div> </div><div class='jdgm-rev jdgm-divider-top' data-verified-buyer='false' data-review-id='0b903fd1-fa96-4f12-9b2e-7b810665f28c' data-review-language='' data-product-title='RYZE Gums Frosty Mint Flavour - 2mg' data-product-url='/products/ryze-gum-frosty-mint-2mg' data-thumb-up-count='0' data-thumb-down-count='0'> <div class='jdgm-rev__header'>  <div class='jdgm-rev__icon' > R </div>  <span class='jdgm-rev__rating' data-score='5' tabindex='0' aria-label='5 star review' role='img'> <span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span> </span> <span class='jdgm-rev__timestamp jdgm-spinner' data-content='2024-01-11 10:05:20 UTC'></span>    <div class='jdgm-rev__br'></div> <span class='jdgm-rev__buyer-badge-wrapper'>  </span> <span class='jdgm-rev__author-wrapper'> <span class='jdgm-rev__author'>Ravi Kumar Yadav</span> <span class='jdgm-rev__location' >  </span>  </span> </div> <div class='jdgm-rev__content'>  <div class='jdgm-rev__custom-form'>  </div> <b class='jdgm-rev__title'>good</b> <div class='jdgm-rev__body'><p>Mujhe lagta hai dheere dheere meri tambaku khane ki aadat chali jayegi. must try</p></div> <div class='jdgm-rev__pics'>  </div> <div class='jdgm-rev__vids'>   </div> <div class='jdgm-rev__transparency-badge-wrapper'>  </div> </div> <div class='jdgm-rev__actions'> <div class='jdgm-rev__social'></div> <div class='jdgm-rev__votes'></div> </div> <div class='jdgm-rev__reply'>  </div> </div><div class='jdgm-rev jdgm-divider-top' data-verified-buyer='false' data-review-id='34fe50ab-a746-4c1e-8f4a-207a7c363669' data-review-language='' data-product-title='RYZE Gums Frosty Mint Flavour - 2mg' data-product-url='/products/ryze-gum-frosty-mint-2mg' data-thumb-up-count='0' data-thumb-down-count='0'> <div class='jdgm-rev__header'>  <div class='jdgm-rev__icon' > R </div>  <span class='jdgm-rev__rating' data-score='5' tabindex='0' aria-label='5 star review' role='img'> <span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span> </span> <span class='jdgm-rev__timestamp jdgm-spinner' data-content='2024-01-11 09:54:37 UTC'></span>    <div class='jdgm-rev__br'></div> <span class='jdgm-rev__buyer-badge-wrapper'>  </span> <span class='jdgm-rev__author-wrapper'> <span class='jdgm-rev__author'>Rohit Rao</span> <span class='jdgm-rev__location' >  </span>  </span> </div> <div class='jdgm-rev__content'>  <div class='jdgm-rev__custom-form'>  </div> <b class='jdgm-rev__title'>Not lying</b> <div class='jdgm-rev__body'><p>It's a game changer for me recently, it's been 2 months i hv starting taking them. My smoking has reduce to 3 ciggs to 1. let's see how it helps me further.</p></div> <div class='jdgm-rev__pics'>  </div> <div class='jdgm-rev__vids'>   </div> <div class='jdgm-rev__transparency-badge-wrapper'>  </div> </div> <div class='jdgm-rev__actions'> <div class='jdgm-rev__social'></div> <div class='jdgm-rev__votes'></div> </div> <div class='jdgm-rev__reply'>  </div> </div></div> <div class='jdgm-paginate' data-per-page='5' data-url='https://api.judge.me/reviews/reviews_for_widget' ><a class='jdgm-paginate__page jdgm-curt' data-page='1' aria-label='Page 1' tabindex='0'  role='button'>1</a><a class='jdgm-paginate__page ' data-page='2' aria-label='Page 2' tabindex='0'  role='button'>2</a><a class='jdgm-paginate__page ' data-page='3' aria-label='Page 3' tabindex='0'  role='button'>3</a><a class='jdgm-paginate__page jdgm-paginate__next-page' data-page='2' aria-label='Page 2' tabindex='0' rel='next' role='button'></a><a class='jdgm-paginate__page jdgm-paginate__last-page' data-page='3' aria-label='Page 3' tabindex='0'  role='button'></a></div>  </div> <div class='jdgm-rev-widg__paginate-spinner-wrapper'> <div class='jdgm-spinner'></div> </div> </div>",
+              "type": "string"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/32497485545724",
+              "namespace": "reviews",
+              "key": "rating",
+              "value": "{\"scale_min\":\"1.0\",\"scale_max\":\"5.0\",\"value\":\"4.75\"}",
+              "type": "rating"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/32497485578492",
+              "namespace": "reviews",
+              "key": "rating_count",
+              "value": "12",
+              "type": "number_integer"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/33082088915196",
+              "namespace": "theme",
+              "key": "label",
+              "value": "Bestseller",
+              "type": "single_line_text_field"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/33082090258684",
+              "namespace": "shopify--discovery--product_recommendation",
+              "key": "related_products_display",
+              "value": "only manual",
+              "type": "single_line_text_field"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/33082090291452",
+              "namespace": "shopify--discovery--product_recommendation",
+              "key": "related_products",
+              "value": "[\"gid://shopify/Product/8882869240060\",\"gid://shopify/Product/8882869371132\",\"gid://shopify/Product/8882869764348\",\"gid://shopify/Product/8882870845692\"]",
+              "type": "list.product_reference"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/33082090324220",
+              "namespace": "shopify--discovery--product_recommendation",
+              "key": "complementary_products",
+              "value": "[]",
+              "type": "list.product_reference"
+            }
+          }
+        ]
+      },
+      "variants": {
+        "edges": [
+          {
+            "node": {
+              "id": "gid://shopify/ProductVariant/46830739554556",
+              "inventoryQuantity": 326
+            }
+          }
+        ]
+      },
+      "seo": {
+        "title": "RYZE Sugar free Gums Frosty Mint Flavor - 2mg",
+        "description": "Buy RYZE Sugar Free Gums Frosty Mint Flavor- 2mg to help you stop smoking. Try this nicotine gum to satisfy your nicotine cravings with a burst of minty flavor."
+      },
+      "images": {
+        "edges": [
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662681145596",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/mint_5309c641-dee5-40a3-840f-ee03deda905f.jpg?v=1737097255",
+              "altText": "Nicotine Gums In Frosty Mint Flavor"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43948513820924",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/1_575a1c87-6b87-4c22-aa96-99534b71ead0.jpg?v=1741777986",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43948513722620",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/2.jpg?v=1741777986",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43948513755388",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/3.jpg?v=1741777986",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43948513788156",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/4.jpg?v=1741777986",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662681309436",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/09_Ryze_English.jpg?v=1739941609",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662681407740",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/Mintx5.jpg?v=1742211707",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662681440508",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/Mintx10.jpg?v=1742211707",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662681473276",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/Mintx15.jpg?v=1742211707",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662681506044",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/Mintx20.jpg?v=1742211707",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662681538812",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/Mint-PDPx10.jpg?v=1742211707",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662681571580",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/Mint-PDPx20.jpg?v=1742211707",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662681604348",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/MintPackof30.jpg?v=1742211707",
+              "altText": ""
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "gid://shopify/Product/8882869240060",
+      "title": "RYZE Gums Fresh Fennel Flavor - 2mg",
+      "handle": "ryze-gum-fresh-fennel-2mg",
+      "status": "ACTIVE",
+      "vendor": "Ryze Fertin",
+      "description": "RYZE is a sugar free gum that helps manage your cravings with its controlled release formula. Easy on throat and gentle for jaw, Ryze will be your perfect companion at all testing moments. Caution:- Do not consume the product if found cracked/melted/damaged. Storage:- Store in a cool & dry place. Protect from direct sunlight. Keep out of sight and reach of children. Shelf Life 24 Months. Check expiry date before consuming.",
+      "metafields": {
+        "edges": [
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/32337325719804",
+              "namespace": "global",
+              "key": "description_tag",
+              "value": "Get RYZE Gum Fresh Fennel Flavour- 2mg to help you in curb smoking. With an intense  fresh fennel flavor, this gum will gently satisfy your nicotine cravings.\n",
+              "type": "string"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/32497485086972",
+              "namespace": "judgeme",
+              "key": "badge",
+              "value": "<div style='display:none' class='jdgm-prev-badge' data-average-rating='5.00' data-number-of-reviews='1' data-number-of-questions='0'> <span class='jdgm-prev-badge__stars' data-score='5.00' tabindex='0' aria-label='5.00 stars' role='button'> <span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span> </span> <span class='jdgm-prev-badge__text'> 1 review </span> </div>",
+              "type": "string"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/32497485119740",
+              "namespace": "judgeme",
+              "key": "widget",
+              "value": "<div class='jdgm-rev-widg' data-updated-at='2025-06-03T11:46:03Z' data-average-rating='5.00' data-number-of-reviews='1' data-number-of-questions='0'> <style class='jdgm-temp-hiding-style'>.jdgm-rev-widg{ display: none }</style> <div class='jdgm-rev-widg__header'> <h2 class='jdgm-rev-widg__title'>Customer Reviews</h2>  <div class='jdgm-rev-widg__summary'> <div class='jdgm-rev-widg__summary-stars' aria-label='Average rating is 5.00 stars' role='img'> <span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span> </div> <div class='jdgm-rev-widg__summary-text'>Based on 1 review</div> </div> <a style='display: none' href='#' class='jdgm-write-rev-link' role='button'>Write a review</a> <div class='jdgm-histogram jdgm-temp-hidden'>  <div class='jdgm-histogram__row' data-rating='5' data-frequency='1' data-percentage='100'>  <div class='jdgm-histogram__star' role='button' aria-label=\"100% (1) reviews with 5 star rating\"  tabindex='0' ><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span></div> <div class='jdgm-histogram__bar'> <div class='jdgm-histogram__bar-content' style='width: 100%;'> </div> </div> <div class='jdgm-histogram__percentage'>100%</div> <div class='jdgm-histogram__frequency'>(1)</div> </div>  <div class='jdgm-histogram__row' data-rating='4' data-frequency='0' data-percentage='0'>  <div class='jdgm-histogram__star' role='button' aria-label=\"0% (0) reviews with 4 star rating\"  tabindex='0' ><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--off'></span></div> <div class='jdgm-histogram__bar'> <div class='jdgm-histogram__bar-content' style='width: 0%;'> </div> </div> <div class='jdgm-histogram__percentage'>0%</div> <div class='jdgm-histogram__frequency'>(0)</div> </div>  <div class='jdgm-histogram__row' data-rating='3' data-frequency='0' data-percentage='0'>  <div class='jdgm-histogram__star' role='button' aria-label=\"0% (0) reviews with 3 star rating\"  tabindex='0' ><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span></div> <div class='jdgm-histogram__bar'> <div class='jdgm-histogram__bar-content' style='width: 0%;'> </div> </div> <div class='jdgm-histogram__percentage'>0%</div> <div class='jdgm-histogram__frequency'>(0)</div> </div>  <div class='jdgm-histogram__row' data-rating='2' data-frequency='0' data-percentage='0'>  <div class='jdgm-histogram__star' role='button' aria-label=\"0% (0) reviews with 2 star rating\"  tabindex='0' ><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span></div> <div class='jdgm-histogram__bar'> <div class='jdgm-histogram__bar-content' style='width: 0%;'> </div> </div> <div class='jdgm-histogram__percentage'>0%</div> <div class='jdgm-histogram__frequency'>(0)</div> </div>  <div class='jdgm-histogram__row' data-rating='1' data-frequency='0' data-percentage='0'>  <div class='jdgm-histogram__star' role='button' aria-label=\"0% (0) reviews with 1 star rating\"  tabindex='0' ><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span><span class='jdgm-star jdgm--off'></span></div> <div class='jdgm-histogram__bar'> <div class='jdgm-histogram__bar-content' style='width: 0%;'> </div> </div> <div class='jdgm-histogram__percentage'>0%</div> <div class='jdgm-histogram__frequency'>(0)</div> </div>  <div class='jdgm-histogram__row jdgm-histogram__clear-filter' data-rating=null tabindex='0'></div> </div>     <div class='jdgm-rev-widg__sort-wrapper'></div> </div> <div class='jdgm-rev-widg__body'>  <div class='jdgm-rev-widg__reviews'><div class='jdgm-rev jdgm-divider-top' data-verified-buyer='false' data-review-id='b22f8c51-8f5d-429e-8c33-4fdc3b5bb9f6' data-review-language='' data-product-title='RYZE Gums Fresh Fennel Flavor - 2mg' data-product-url='/products/ryze-gum-fresh-fennel-2mg' data-thumb-up-count='0' data-thumb-down-count='0'> <div class='jdgm-rev__header'>  <div class='jdgm-rev__icon' > A </div>  <span class='jdgm-rev__rating' data-score='5' tabindex='0' aria-label='5 star review' role='img'> <span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span><span class='jdgm-star jdgm--on'></span> </span> <span class='jdgm-rev__timestamp jdgm-spinner' data-content='2024-01-05 05:09:55 UTC'></span>    <div class='jdgm-rev__br'></div> <span class='jdgm-rev__buyer-badge-wrapper'>  </span> <span class='jdgm-rev__author-wrapper'> <span class='jdgm-rev__author'>Ajit Kumar Yadav</span> <span class='jdgm-rev__location' >  </span>  </span> </div> <div class='jdgm-rev__content'>  <div class='jdgm-rev__custom-form'>  </div> <b class='jdgm-rev__title'>Best for nicotine replacement</b> <div class='jdgm-rev__body'><p>Nice for who want to quit smoking. Soft for chewing. Dont effect teeth gum while chewing.</p></div> <div class='jdgm-rev__pics'>  </div> <div class='jdgm-rev__vids'>   </div> <div class='jdgm-rev__transparency-badge-wrapper'>  </div> </div> <div class='jdgm-rev__actions'> <div class='jdgm-rev__social'></div> <div class='jdgm-rev__votes'></div> </div> <div class='jdgm-rev__reply'>  </div> </div></div> <div class='jdgm-paginate' data-per-page='5' data-url='https://api.judge.me/reviews/reviews_for_widget' style=\"display: none;\"></div>  </div> <div class='jdgm-rev-widg__paginate-spinner-wrapper'> <div class='jdgm-spinner'></div> </div> </div>",
+              "type": "string"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/32497485152508",
+              "namespace": "reviews",
+              "key": "rating",
+              "value": "{\"scale_min\":\"1.0\",\"scale_max\":\"5.0\",\"value\":\"5.0\"}",
+              "type": "rating"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/32497485185276",
+              "namespace": "reviews",
+              "key": "rating_count",
+              "value": "1",
+              "type": "number_integer"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/33082085507324",
+              "namespace": "shopify--discovery--product_recommendation",
+              "key": "related_products_display",
+              "value": "ahead",
+              "type": "single_line_text_field"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/33082085540092",
+              "namespace": "shopify--discovery--product_recommendation",
+              "key": "related_products",
+              "value": "[\"gid://shopify/Product/8882869764348\",\"gid://shopify/Product/8882869141756\",\"gid://shopify/Product/8882869371132\",\"gid://shopify/Product/8882870845692\"]",
+              "type": "list.product_reference"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/Metafield/33082085572860",
+              "namespace": "shopify--discovery--product_recommendation",
+              "key": "complementary_products",
+              "value": "[]",
+              "type": "list.product_reference"
+            }
+          }
+        ]
+      },
+      "variants": {
+        "edges": [
+          {
+            "node": {
+              "id": "gid://shopify/ProductVariant/46830739849468",
+              "inventoryQuantity": 0
+            }
+          }
+        ]
+      },
+      "seo": {
+        "title": null,
+        "description": "Get RYZE Gum Fresh Fennel Flavour- 2mg to help you in curb smoking. With an intense  fresh fennel flavor, this gum will gently satisfy your nicotine cravings.\n"
+      },
+      "images": {
+        "edges": [
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662683242748",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/fennel.jpg?v=1737097275",
+              "altText": "Ryze Fennel Flavor Nicotine Gum"
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43948513820924",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/1_575a1c87-6b87-4c22-aa96-99534b71ead0.jpg?v=1741777986",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43948513722620",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/2.jpg?v=1741777986",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43948513755388",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/3.jpg?v=1741777986",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43948513788156",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/4.jpg?v=1741777986",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662683439356",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/09_Ryze_English_b65d4339-054b-4dae-b37b-cf5d32140bb4.jpg?v=1739941554",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662683537660",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/Fennelx5.jpg?v=1742208113",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662683570428",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/Fennelx10.jpg?v=1742208113",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662683603196",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/Fennelx15.jpg?v=1742208113",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662683635964",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/Fennelx20.jpg?v=1742208113",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662683668732",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/Fennel-PDPx20.jpg?v=1742208113",
+              "altText": ""
+            }
+          },
+          {
+            "node": {
+              "id": "gid://shopify/ProductImage/43662683701500",
+              "url": "https://cdn.shopify.com/s/files/1/0726/9161/3948/files/MicrosoftTeams-image_18.jpg?v=1742208113",
+              "altText": ""
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "pageInfo": {
+    "hasNextPage": true,
+    "endCursor": "eyJsYXN0X2lkIjo4ODgyODY5MjQwMDYwLCJsYXN0X3ZhbHVlIjoiODg4Mjg2OTI0MDA2MCJ9"
+  },
+  "success": true,
+  "message": "Successfully retrieved 2 products."
+}
