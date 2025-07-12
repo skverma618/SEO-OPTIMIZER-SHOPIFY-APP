@@ -239,6 +239,9 @@ function ScanResults() {
     const product = results.find(p => p.id === productId);
     const productSuggestionIds = product ? product.suggestions.map(s => s.id) : [];
     
+    // Only work with active (non-applied) suggestions
+    const activeSuggestionIds = productSuggestionIds.filter(id => !appliedSuggestions.includes(id));
+    
     setSelectedProducts(prev => {
       if (isSelected) {
         return [...prev, productId];
@@ -247,23 +250,23 @@ function ScanResults() {
       }
     });
     
-    // Also select/deselect all suggestions for this product
+    // Also select/deselect only active suggestions for this product
     setSelectedSuggestions(prev => {
       if (isSelected) {
-        // Add all product suggestions to selected suggestions
+        // Add only active product suggestions to selected suggestions
         const newSelection = [...prev];
-        productSuggestionIds.forEach(suggestionId => {
+        activeSuggestionIds.forEach(suggestionId => {
           if (!newSelection.includes(suggestionId)) {
             newSelection.push(suggestionId);
           }
         });
         return newSelection;
       } else {
-        // Remove all product suggestions from selected suggestions
-        return prev.filter(id => !productSuggestionIds.includes(id));
+        // Remove only active product suggestions from selected suggestions
+        return prev.filter(id => !activeSuggestionIds.includes(id));
       }
     });
-  }, [results]);
+  }, [results, appliedSuggestions]);
 
 if (!SEOSuggestionCard) {
   console.error('SEOSuggestionCard failed to import!');
@@ -358,13 +361,17 @@ if (!SEOSuggestionCard) {
                   rows={results.map((product) => {
                     const filteredSuggestions = getCurrentTabSuggestions().filter(s => s.productId === product.id);
                     const productSuggestionIds = product.suggestions.map(s => s.id);
-                    const allSuggestionsSelected = productSuggestionIds.every(id => selectedSuggestions.includes(id));
-                    const isProductSelected = allSuggestionsSelected && productSuggestionIds.length > 0;
+                    
+                    // Only consider active (non-applied) suggestions for checkbox state
+                    const activeSuggestionIds = productSuggestionIds.filter(id => !appliedSuggestions.includes(id));
+                    const allActiveSuggestionsSelected = activeSuggestionIds.length > 0 && activeSuggestionIds.every(id => selectedSuggestions.includes(id));
+                    const hasActiveSuggestions = activeSuggestionIds.length > 0;
                     
                     return [
                       <Checkbox
-                        checked={isProductSelected}
+                        checked={allActiveSuggestionsSelected}
                         onChange={(checked) => handleProductSelection(product.id, checked)}
+                        disabled={!hasActiveSuggestions}
                         ariaLabel={`Select ${product.title}`}
                       />,
                       <InlineStack gap="300" align="start">
