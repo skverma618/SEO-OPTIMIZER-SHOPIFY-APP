@@ -23,7 +23,7 @@ import {
 import { ApiResponseDto } from '../../dto/common.dto';
 
 @ApiTags('seo')
-@Controller('api/seo')
+@Controller('seo')
 export class SeoController {
   private readonly logger = new Logger(SeoController.name);
 
@@ -162,6 +162,87 @@ export class SeoController {
       this.logger.error('Error scanning products', error);
       throw new HttpException(
         'Failed to scan products',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('analyze')
+  @ApiOperation({
+    summary: 'Analyze products for SEO issues',
+    description: 'Analyzes specific products for SEO opportunities and returns suggestions',
+  })
+  @ApiQuery({
+    name: 'shop',
+    description: 'Shopify shop domain',
+    example: 'my-shop.myshopify.com',
+  })
+  @ApiBody({
+    type: ScanProductsDto,
+    description: 'Product IDs to analyze',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'SEO analysis completed successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        data: { type: 'object' },
+        message: {
+          type: 'string',
+          example: 'SEO analysis completed successfully',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - Shop parameter or Product IDs are required',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
+  async analyzeSEO(
+    @Body() scanProductsDto: ScanProductsDto,
+    @Query('shop') shop: string,
+  ): Promise<ApiResponseDto<any>> {
+    try {
+      if (!shop) {
+        throw new HttpException(
+          'Shop parameter is required',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      if (
+        !scanProductsDto.productIds ||
+        scanProductsDto.productIds.length === 0
+      ) {
+        throw new HttpException(
+          'Product IDs are required',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const result = await this.seoService.scanSelectedProducts(
+        shop,
+        scanProductsDto.productIds,
+      );
+
+      return {
+        success: true,
+        data: {
+          ...result,
+          totalIssues: result.productsWithIssues,
+        },
+        message: 'SEO analysis completed successfully',
+      };
+    } catch (error) {
+      this.logger.error('Error analyzing SEO', error);
+      throw new HttpException(
+        'Failed to analyze SEO',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

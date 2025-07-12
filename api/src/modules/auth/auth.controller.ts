@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 import { ApiResponseDto } from '../../dto/common.dto';
 
 @ApiTags('auth')
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 

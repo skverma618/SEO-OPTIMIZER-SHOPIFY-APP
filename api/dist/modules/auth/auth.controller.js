@@ -222,7 +222,7 @@ __decorate([
 ], AuthController.prototype, "verify", null);
 exports.AuthController = AuthController = AuthController_1 = __decorate([
     (0, swagger_1.ApiTags)('auth'),
-    (0, common_1.Controller)('api/auth'),
+    (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

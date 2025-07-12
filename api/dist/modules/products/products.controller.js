@@ -24,11 +24,9 @@ let ProductsController = ProductsController_1 = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
     }
-    async getProducts(paginationDto, shop) {
+    async getProducts(queryDto) {
         try {
-            if (!shop) {
-                throw new common_1.HttpException('Shop parameter is required', common_1.HttpStatus.BAD_REQUEST);
-            }
+            const { shop, ...paginationDto } = queryDto;
             const result = await this.productsService.getProducts(shop, paginationDto);
             return {
                 success: true,
@@ -130,9 +128,8 @@ __decorate([
         description: 'Internal server error',
     }),
     __param(0, (0, common_1.Query)()),
-    __param(1, (0, common_1.Query)('shop')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [common_dto_1.PaginationDto, String]),
+    __metadata("design:paramtypes", [common_dto_1.ProductsQueryDto]),
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "getProducts", null);
 __decorate([
@@ -196,7 +193,7 @@ __decorate([
 ], ProductsController.prototype, "getProduct", null);
 exports.ProductsController = ProductsController = ProductsController_1 = __decorate([
     (0, swagger_1.ApiTags)('products'),
-    (0, common_1.Controller)('api/products'),
+    (0, common_1.Controller)('products'),
     __metadata("design:paramtypes", [products_service_1.ProductsService])
 ], ProductsController);
 //# sourceMappingURL=products.controller.js.map

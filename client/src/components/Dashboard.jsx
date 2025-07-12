@@ -13,72 +13,125 @@ import {
 import { SearchIcon, ChartVerticalIcon } from '@shopify/polaris-icons';
 import { useNavigate } from 'react-router-dom';
 import ProductSelectionModal from './ProductSelectionModal';
+import { useShop } from '../contexts/ShopContext';
+import ApiService from '../services/api';
 
 function Dashboard() {
   const navigate = useNavigate();
+  const { shop } = useShop();
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [scanType, setScanType] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleScanEntireStore = useCallback(async () => {
+    if (!shop) return;
+
     setIsScanning(true);
     setScanType('entire-store');
+    setError(null);
     
     try {
-      // TODO: Implement API call to scan entire store
-      console.log('Scanning entire store...');
+      // First, get all products from the store
+      console.log('Fetching all products for store scan...');
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      let allProducts = [];
+      let currentPage = 1;
+      let hasMoreProducts = true;
       
-      // Navigate to results page
-      navigate('/results', { 
-        state: { 
-          scanType: 'entire-store',
-          totalProducts: 150, // Mock data
-          issuesFound: 45 
-        } 
-      });
+      while (hasMoreProducts) {
+        const response = await ApiService.getProducts(shop, {
+          page: currentPage,
+          limit: 50, // Fetch more products per page for efficiency
+        });
+        
+        if (response.success && response.data.products) {
+          allProducts = [...allProducts, ...response.data.products];
+          hasMoreProducts = response.data.pagination.hasNextPage;
+          currentPage++;
+        } else {
+          hasMoreProducts = false;
+        }
+      }
+
+      if (allProducts.length === 0) {
+        throw new Error('No products found in your store');
+      }
+
+      // Extract product IDs for SEO analysis
+      const productIds = allProducts.map(product => product.id);
+      
+      // Perform SEO analysis
+      console.log(`Analyzing SEO for ${allProducts.length} products...`);
+      const seoResponse = await ApiService.analyzeSEO(shop, productIds);
+      
+      if (seoResponse.success) {
+        // Navigate to results page with real data
+        navigate('/results', {
+          state: {
+            scanType: 'entire-store',
+            totalProducts: allProducts.length,
+            products: allProducts,
+            seoResults: seoResponse.data,
+            issuesFound: seoResponse.data.totalIssues || 0
+          }
+        });
+      } else {
+        throw new Error('SEO analysis failed');
+      }
     } catch (error) {
       console.error('Error scanning store:', error);
+      setError(error.message || 'Failed to scan store');
     } finally {
       setIsScanning(false);
       setScanType(null);
     }
-  }, [navigate]);
+  }, [navigate, shop]);
 
   const handleScanSelectedProducts = useCallback(() => {
     setIsProductModalOpen(true);
   }, []);
 
   const handleProductSelectionConfirm = useCallback(async (selectedProducts) => {
+    if (!shop || selectedProducts.length === 0) return;
+
     setIsProductModalOpen(false);
     setIsScanning(true);
     setScanType('selected-products');
+    setError(null);
 
     try {
-      // TODO: Implement API call to scan selected products
       console.log('Scanning selected products:', selectedProducts);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Extract product IDs for SEO analysis
+      const productIds = selectedProducts.map(product => product.id);
       
-      // Navigate to results page
-      navigate('/results', { 
-        state: { 
-          scanType: 'selected-products',
-          selectedProducts,
-          totalProducts: selectedProducts.length,
-          issuesFound: Math.floor(selectedProducts.length * 0.3) // Mock 30% have issues
-        } 
-      });
+      // Perform SEO analysis on selected products
+      const seoResponse = await ApiService.analyzeSEO(shop, productIds);
+      
+      if (seoResponse.success) {
+        // Navigate to results page with real data
+        navigate('/results', {
+          state: {
+            scanType: 'selected-products',
+            selectedProducts,
+            totalProducts: selectedProducts.length,
+            products: selectedProducts,
+            seoResults: seoResponse.data,
+            issuesFound: seoResponse.data.totalIssues || 0
+          }
+        });
+      } else {
+        throw new Error('SEO analysis failed');
+      }
     } catch (error) {
       console.error('Error scanning selected products:', error);
+      setError(error.message || 'Failed to scan selected products');
     } finally {
       setIsScanning(false);
       setScanType(null);
     }
-  }, [navigate]);
+  }, [navigate, shop]);
 
   const handleProductSelectionCancel = useCallback(() => {
     setIsProductModalOpen(false);
@@ -87,15 +140,21 @@ function Dashboard() {
   return (
     <Page
       title="SEO Optimizer"
-      subtitle="Analyze and optimize your store's SEO performance"
+      subtitle={`Analyze and optimize your store's SEO performance${shop ? ` - ${shop}` : ''}`}
     >
       <BlockStack gap="500">
+        {error && (
+          <Banner status="critical" title="Error">
+            <p>{error}</p>
+          </Banner>
+        )}
+
         <Banner
           title="Welcome to SEO Optimizer"
           status="info"
         >
           <p>
-            Scan your products to identify SEO opportunities including keyword optimization, 
+            Scan your products to identify SEO opportunities including keyword optimization,
             meta descriptions, image alt text, and technical SEO improvements.
           </p>
         </Banner>

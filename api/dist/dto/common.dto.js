@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ApiResponseDto = exports.PaginationDto = void 0;
+exports.ApiResponseDto = exports.ProductsQueryDto = exports.PaginationDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 const swagger_1 = require("@nestjs/swagger");
@@ -57,6 +57,19 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], PaginationDto.prototype, "search", void 0);
+class ProductsQueryDto extends PaginationDto {
+    shop;
+}
+exports.ProductsQueryDto = ProductsQueryDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Shopify shop domain',
+        example: 'my-shop.myshopify.com',
+        required: true,
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductsQueryDto.prototype, "shop", void 0);
 class ApiResponseDto {
     success;
     data;

@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 
 // Entities
 import { Shop } from './entities/shop.entity';
@@ -57,6 +56,6 @@ import { ShopifyModule } from './modules/shopify/shopify.module';
     ShopifyModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

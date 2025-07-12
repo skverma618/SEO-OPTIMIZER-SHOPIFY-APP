@@ -39,6 +39,16 @@ export class PaginationDto {
   search?: string;
 }
 
+export class ProductsQueryDto extends PaginationDto {
+  @ApiProperty({
+    description: 'Shopify shop domain',
+    example: 'my-shop.myshopify.com',
+    required: true,
+  })
+  @IsString()
+  shop: string;
+}
+
 export class ApiResponseDto<T> {
   @ApiProperty({
     description: 'Indicates if the request was successful',

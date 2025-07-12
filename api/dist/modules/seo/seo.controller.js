@@ -62,6 +62,30 @@ let SeoController = SeoController_1 = class SeoController {
             throw new common_1.HttpException('Failed to scan products', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    async analyzeSEO(scanProductsDto, shop) {
+        try {
+            if (!shop) {
+                throw new common_1.HttpException('Shop parameter is required', common_1.HttpStatus.BAD_REQUEST);
+            }
+            if (!scanProductsDto.productIds ||
+                scanProductsDto.productIds.length === 0) {
+                throw new common_1.HttpException('Product IDs are required', common_1.HttpStatus.BAD_REQUEST);
+            }
+            const result = await this.seoService.scanSelectedProducts(shop, scanProductsDto.productIds);
+            return {
+                success: true,
+                data: {
+                    ...result,
+                    totalIssues: result.productsWithIssues,
+                },
+                message: 'SEO analysis completed successfully',
+            };
+        }
+        catch (error) {
+            this.logger.error('Error analyzing SEO', error);
+            throw new common_1.HttpException('Failed to analyze SEO', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     async applySuggestion(applySuggestionDto, shop) {
         try {
             if (!shop) {
@@ -185,6 +209,50 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SeoController.prototype, "scanProducts", null);
 __decorate([
+    (0, common_1.Post)('analyze'),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Analyze products for SEO issues',
+        description: 'Analyzes specific products for SEO opportunities and returns suggestions',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'shop',
+        description: 'Shopify shop domain',
+        example: 'my-shop.myshopify.com',
+    }),
+    (0, swagger_1.ApiBody)({
+        type: seo_dto_1.ScanProductsDto,
+        description: 'Product IDs to analyze',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'SEO analysis completed successfully',
+        schema: {
+            type: 'object',
+            properties: {
+                success: { type: 'boolean', example: true },
+                data: { type: 'object' },
+                message: {
+                    type: 'string',
+                    example: 'SEO analysis completed successfully',
+                },
+            },
+        },
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 400,
+        description: 'Bad request - Shop parameter or Product IDs are required',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 500,
+        description: 'Internal server error',
+    }),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Query)('shop')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [seo_dto_1.ScanProductsDto, String]),
+    __metadata("design:returntype", Promise)
+], SeoController.prototype, "analyzeSEO", null);
+__decorate([
     (0, common_1.Post)('apply/suggestion'),
     (0, swagger_1.ApiOperation)({
         summary: 'Apply a single SEO suggestion',
@@ -271,7 +339,7 @@ __decorate([
 ], SeoController.prototype, "applyBulkSuggestions", null);
 exports.SeoController = SeoController = SeoController_1 = __decorate([
     (0, swagger_1.ApiTags)('seo'),
-    (0, common_1.Controller)('api/seo'),
+    (0, common_1.Controller)('seo'),
     __metadata("design:paramtypes", [seo_service_1.SeoService])
 ], SeoController);
 //# sourceMappingURL=seo.controller.js.map

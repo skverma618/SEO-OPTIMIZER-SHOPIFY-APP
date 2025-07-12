@@ -7,6 +7,7 @@ export declare class SeoController {
     constructor(seoService: SeoService);
     scanStore(shop: string): Promise<ApiResponseDto<any>>;
     scanProducts(scanProductsDto: ScanProductsDto, shop: string): Promise<ApiResponseDto<any>>;
+    analyzeSEO(scanProductsDto: ScanProductsDto, shop: string): Promise<ApiResponseDto<any>>;
     applySuggestion(applySuggestionDto: ApplySuggestionDto, shop: string): Promise<ApiResponseDto<any>>;
     applyBulkSuggestions(applyBulkDto: ApplyBulkSuggestionsDto, shop: string): Promise<ApiResponseDto<any>>;
 }

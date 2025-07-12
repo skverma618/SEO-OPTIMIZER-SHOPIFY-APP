@@ -12,7 +12,6 @@ const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const throttler_1 = require("@nestjs/throttler");
 const app_controller_1 = require("./app.controller");
-const app_service_1 = require("./app.service");
 const shop_entity_1 = require("./entities/shop.entity");
 const scan_history_entity_1 = require("./entities/scan-history.entity");
 const auth_module_1 = require("./modules/auth/auth.module");
@@ -58,7 +57,7 @@ exports.AppModule = AppModule = __decorate([
             shopify_module_1.ShopifyModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

@@ -3,6 +3,9 @@ export declare class PaginationDto {
     limit?: number;
     search?: string;
 }
+export declare class ProductsQueryDto extends PaginationDto {
+    shop: string;
+}
 export declare class ApiResponseDto<T> {
     success: boolean;
     data?: T;

@@ -3,9 +3,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const configService = app.get(ConfigService);
 
@@ -19,6 +21,10 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Shopify-Access-Token'],
     credentials: true,
   });
+
+  // Serve static files from the client build directory
+  app.useStaticAssets(join(__dirname, '..', '..', 'client', 'dist'));
+  app.setBaseViewsDir(join(__dirname, '..', '..', 'client', 'dist'));
 
   // Global validation pipe
   app.useGlobalPipes(

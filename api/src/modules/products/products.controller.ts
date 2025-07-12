@@ -15,10 +15,10 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
-import { PaginationDto, ApiResponseDto } from '../../dto/common.dto';
+import { ApiResponseDto, ProductsQueryDto } from '../../dto/common.dto';
 
 @ApiTags('products')
-@Controller('api/products')
+@Controller('products')
 export class ProductsController {
   private readonly logger = new Logger(ProductsController.name);
 
@@ -85,16 +85,10 @@ export class ProductsController {
     description: 'Internal server error',
   })
   async getProducts(
-    @Query() paginationDto: PaginationDto,
-    @Query('shop') shop: string,
+    @Query() queryDto: ProductsQueryDto,
   ): Promise<ApiResponseDto<any>> {
     try {
-      if (!shop) {
-        throw new HttpException(
-          'Shop parameter is required',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+      const { shop, ...paginationDto } = queryDto;
 
       const result = await this.productsService.getProducts(
         shop,

@@ -17,55 +17,88 @@ import {
   Banner,
 } from '@shopify/polaris';
 import { SearchIcon } from '@shopify/polaris-icons';
-
-// Mock product data - in real app, this would come from Shopify API
-const mockProducts = Array.from({ length: 50 }, (_, index) => ({
-  id: `product-${index + 1}`,
-  title: `Product ${index + 1}`,
-  handle: `product-${index + 1}`,
-  status: Math.random() > 0.2 ? 'active' : 'draft',
-  totalInventory: Math.floor(Math.random() * 100),
-  createdAt: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
-  image: {
-    url: `https://picsum.photos/60/60?random=${index}`,
-    altText: `Product ${index + 1} image`,
-  },
-  vendor: ['Acme Corp', 'Best Products', 'Quality Goods', 'Premium Brand'][Math.floor(Math.random() * 4)],
-  productType: ['Electronics', 'Clothing', 'Home & Garden', 'Sports'][Math.floor(Math.random() * 4)],
-}));
+import { useShop } from '../contexts/ShopContext';
+import ApiService from '../services/api';
 
 function ProductSelectionModal({ open, onConfirm, onCancel }) {
+  const { shop } = useShop();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [error, setError] = useState(null);
   
   const productsPerPage = 10;
 
-  // Filter products based on search query
-  const filteredProducts = products.filter(product =>
-    product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.vendor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.productType.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Load products from Shopify API
+  const loadProducts = async (page = 1, search = '') => {
+    if (!shop) return;
 
-  // Paginate filtered products
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const startIndex = (currentPage - 1) * productsPerPage;
-  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
+    setIsLoading(true);
+    setError(null);
 
-  // Load products (simulate API call)
-  useEffect(() => {
-    if (open) {
-      setIsLoading(true);
-      // Simulate API loading
-      setTimeout(() => {
-        setProducts(mockProducts);
-        setIsLoading(false);
-      }, 500);
+    try {
+      const response = await ApiService.getProducts(shop, {
+        page,
+        limit: productsPerPage,
+        search,
+      });
+
+      if (response.success) {
+        const { products: fetchedProducts, pagination: paginationData } = response.data;
+        
+        // Transform products to match expected format
+        const transformedProducts = fetchedProducts.map(product => ({
+          id: product.id,
+          title: product.title,
+          handle: product.handle,
+          status: product.status,
+          vendor: product.vendor,
+          productType: product.productType,
+          totalInventory: product.totalInventory,
+          createdAt: product.createdAt,
+          updatedAt: product.updatedAt,
+          images: product.images || [],
+          image: product.images?.[0] || {
+            url: 'https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-product-1_large.png',
+            altText: product.title,
+          },
+        }));
+
+        setProducts(transformedProducts);
+        setPagination(paginationData);
+      } else {
+        throw new Error('Failed to fetch products');
+      }
+    } catch (err) {
+      console.error('Error loading products:', err);
+      setError(err.message || 'Failed to load products');
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
     }
-  }, [open]);
+  };
+
+  // Load products when modal opens or page/search changes
+  useEffect(() => {
+    if (open && shop) {
+      loadProducts(currentPage, searchQuery);
+    }
+  }, [open, shop, currentPage]);
+
+  // Handle search with debounce
+  useEffect(() => {
+    if (!open) return;
+
+    const timeoutId = setTimeout(() => {
+      setCurrentPage(1); // Reset to first page when searching
+      loadProducts(1, searchQuery);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, open]);
 
   // Reset state when modal opens
   useEffect(() => {
@@ -78,7 +111,6 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
 
   const handleSearchChange = useCallback((value) => {
     setSearchQuery(value);
-    setCurrentPage(1); // Reset to first page when searching
   }, []);
 
   const handleProductSelection = useCallback((productId) => {
@@ -92,7 +124,7 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
   }, []);
 
   const handleSelectAll = useCallback(() => {
-    const currentPageProductIds = paginatedProducts.map(product => product.id);
+    const currentPageProductIds = products.map(product => product.id);
     const allCurrentSelected = currentPageProductIds.every(id => selectedProducts.includes(id));
     
     if (allCurrentSelected) {
@@ -110,22 +142,22 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
         return newSelection;
       });
     }
-  }, [paginatedProducts, selectedProducts]);
+  }, [products, selectedProducts]);
 
   const handleConfirm = useCallback(() => {
-    const selectedProductData = products.filter(product => 
+    const selectedProductData = products.filter(product =>
       selectedProducts.includes(product.id)
     );
     onConfirm(selectedProductData);
   }, [selectedProducts, products, onConfirm]);
 
   const handlePageChange = useCallback((direction) => {
-    if (direction === 'next' && currentPage < totalPages) {
+    if (direction === 'next' && pagination.hasNextPage) {
       setCurrentPage(prev => prev + 1);
-    } else if (direction === 'previous' && currentPage > 1) {
+    } else if (direction === 'previous' && pagination.hasPreviousPage) {
       setCurrentPage(prev => prev - 1);
     }
-  }, [currentPage, totalPages]);
+  }, [currentPage, pagination]);
 
   const renderProductItem = useCallback((product) => {
     const isSelected = selectedProducts.includes(product.id);
@@ -169,7 +201,7 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
     );
   }, [selectedProducts, handleProductSelection]);
 
-  const currentPageProductIds = paginatedProducts.map(product => product.id);
+  const currentPageProductIds = products.map(product => product.id);
   const allCurrentSelected = currentPageProductIds.length > 0 &&
     currentPageProductIds.every(id => selectedProducts.includes(id));
 
@@ -198,6 +230,12 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
           </Banner>
         )}
 
+        {error && (
+          <Banner status="critical" title="Error loading products">
+            <p>{error}</p>
+          </Banner>
+        )}
+
         <TextField
           label="Search products"
           value={searchQuery}
@@ -206,25 +244,26 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
           prefix={<SearchIcon />}
           clearButton
           onClearButtonClick={() => handleSearchChange('')}
+          disabled={isLoading}
         />
 
         {isLoading ? (
           <div style={{ textAlign: 'center', padding: '40px' }}>
             <Spinner accessibilityLabel="Loading products" size="large" />
           </div>
-        ) : filteredProducts.length === 0 ? (
+        ) : products.length === 0 ? (
           <EmptyState
             heading="No products found"
             image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
           >
-            <p>Try adjusting your search terms</p>
+            <p>{error ? 'Failed to load products' : 'Try adjusting your search terms or check if you have products in your store'}</p>
           </EmptyState>
         ) : (
           <>
             <Card>
               <ResourceList
                 resourceName={{ singular: 'product', plural: 'products' }}
-                items={paginatedProducts}
+                items={products}
                 renderItem={renderProductItem}
                 selectedItems={selectedProducts}
                 onSelectionChange={setSelectedProducts}
@@ -244,20 +283,20 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
               />
             </Card>
 
-            {totalPages > 1 && (
+            {(pagination.hasNextPage || pagination.hasPreviousPage) && (
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Pagination
-                  hasPrevious={currentPage > 1}
+                  hasPrevious={pagination.hasPreviousPage}
                   onPrevious={() => handlePageChange('previous')}
-                  hasNext={currentPage < totalPages}
+                  hasNext={pagination.hasNextPage}
                   onNext={() => handlePageChange('next')}
-                  label={`Page ${currentPage} of ${totalPages}`}
+                  label={`Page ${currentPage}`}
                 />
               </div>
             )}
 
             <Text variant="bodySm" color="subdued" alignment="center">
-              Showing {startIndex + 1}-{Math.min(startIndex + productsPerPage, filteredProducts.length)} of {filteredProducts.length} products
+              Showing {products.length} products on page {currentPage}
             </Text>
           </>
         )}
