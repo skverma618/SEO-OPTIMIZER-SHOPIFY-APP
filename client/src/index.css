@@ -24,10 +24,10 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  padding-top: 80px; /* Add space for Shopify admin header */
+  background-color: #f6f6f7; /* Shopify admin background color */
 }
 
 h1 {

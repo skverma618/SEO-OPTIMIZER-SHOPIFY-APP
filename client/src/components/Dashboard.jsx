@@ -169,67 +169,79 @@ function Dashboard() {
               Select how you'd like to analyze your store's SEO performance
             </Text>
 
-            <InlineStack gap="400" align="start">
-              <Card>
-                <div style={{ padding: '16px' }}>
-                  <BlockStack gap="300">
-                    <InlineStack gap="200" align="center">
-                      <Icon source={ChartVerticalIcon} color="base" />
-                      <Text variant="headingSm" as="h3">
-                        Scan Entire Store
+            <InlineStack gap="400" align="start" wrap={false}>
+              <div style={{ flex: 1 }}>
+                <Card>
+                  <div style={{ padding: '16px' }}>
+                    <BlockStack gap="300">
+                      <div style={{ position: 'relative' }}>
+                        <div style={{ position: 'absolute', top: 0, left: 0 }}>
+                          <Icon source={ChartVerticalIcon} color="base" />
+                        </div>
+                        <div style={{ textAlign: 'center', paddingTop: '8px' }}>
+                          <Text variant="headingSm" as="h3">
+                            Scan Entire Store
+                          </Text>
+                        </div>
+                      </div>
+                      
+                      <Text variant="bodyMd" color="subdued">
+                        Analyze all products in your store for SEO opportunities.
+                        This may take a few minutes for large stores.
                       </Text>
-                    </InlineStack>
-                    
-                    <Text variant="bodyMd" color="subdued">
-                      Analyze all products in your store for SEO opportunities.
-                      This may take a few minutes for large stores.
-                    </Text>
-                    
-                    <Button
-                      primary
-                      size="large"
-                      onClick={handleScanEntireStore}
-                      loading={isScanning && scanType === 'entire-store'}
-                      disabled={isScanning}
-                    >
-                      {isScanning && scanType === 'entire-store'
-                        ? 'Scanning Store...'
-                        : 'Scan Entire Store'
-                      }
-                    </Button>
-                  </BlockStack>
-                </div>
-              </Card>
+                      
+                      <Button
+                        primary
+                        size="large"
+                        onClick={handleScanEntireStore}
+                        loading={isScanning && scanType === 'entire-store'}
+                        disabled={isScanning}
+                      >
+                        {isScanning && scanType === 'entire-store'
+                          ? 'Scanning Store...'
+                          : 'Scan Entire Store'
+                        }
+                      </Button>
+                    </BlockStack>
+                  </div>
+                </Card>
+              </div>
 
-              <Card>
-                <div style={{ padding: '16px' }}>
-                  <BlockStack gap="300">
-                    <InlineStack gap="200" align="center">
-                      <Icon source={SearchIcon} color="base" />
-                      <Text variant="headingSm" as="h3">
-                        Scan Selected Products
+              <div style={{ flex: 1 }}>
+                <Card>
+                  <div style={{ padding: '16px' }}>
+                    <BlockStack gap="300">
+                      <div style={{ position: 'relative' }}>
+                        <div style={{ position: 'absolute', top: 0, left: 0 }}>
+                          <Icon source={SearchIcon} color="base" />
+                        </div>
+                        <div style={{ textAlign: 'center', paddingTop: '8px' }}>
+                          <Text variant="headingSm" as="h3">
+                            Scan Selected Products
+                          </Text>
+                        </div>
+                      </div>
+                      
+                      <Text variant="bodyMd" color="subdued">
+                        Choose specific products to analyze. Perfect for testing
+                        or focusing on your most important products.
                       </Text>
-                    </InlineStack>
-                    
-                    <Text variant="bodyMd" color="subdued">
-                      Choose specific products to analyze. Perfect for testing
-                      or focusing on your most important products.
-                    </Text>
-                    
-                    <Button
-                      onClick={handleScanSelectedProducts}
-                      loading={isScanning && scanType === 'selected-products'}
-                      disabled={isScanning}
-                      size="large"
-                    >
-                      {isScanning && scanType === 'selected-products'
-                        ? 'Scanning Products...'
-                        : 'Select Products'
-                      }
-                    </Button>
-                  </BlockStack>
-                </div>
-              </Card>
+                      
+                      <Button
+                        onClick={handleScanSelectedProducts}
+                        loading={isScanning && scanType === 'selected-products'}
+                        disabled={isScanning}
+                        size="large"
+                      >
+                        {isScanning && scanType === 'selected-products'
+                          ? 'Scanning Products...'
+                          : 'Select Products'
+                        }
+                      </Button>
+                    </BlockStack>
+                  </div>
+                </Card>
+              </div>
             </InlineStack>
           </BlockStack>
         </Card>

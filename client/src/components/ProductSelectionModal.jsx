@@ -5,7 +5,6 @@ import {
   TextField,
   ResourceList,
   ResourceItem,
-  Checkbox,
   Button,
   ButtonGroup,
   Text,
@@ -113,15 +112,6 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
     setSearchQuery(value);
   }, []);
 
-  const handleProductSelection = useCallback((productId) => {
-    setSelectedProducts(prev => {
-      if (prev.includes(productId)) {
-        return prev.filter(id => id !== productId);
-      } else {
-        return [...prev, productId];
-      }
-    });
-  }, []);
 
   const handleSelectAll = useCallback(() => {
     const currentPageProductIds = products.map(product => product.id);
@@ -160,8 +150,6 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
   }, [currentPage, pagination]);
 
   const renderProductItem = useCallback((product) => {
-    const isSelected = selectedProducts.includes(product.id);
-    
     return (
       <ResourceItem
         id={product.id}
@@ -175,31 +163,20 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
         }
         accessibilityLabel={`Select ${product.title}`}
       >
-        <InlineStack gap="300" align="space-between">
-          <BlockStack gap="100">
-            <InlineStack gap="200" align="start">
-              <Checkbox
-                checked={isSelected}
-                onChange={() => handleProductSelection(product.id)}
-                ariaLabel={`Select ${product.title}`}
-              />
-              <BlockStack gap="050">
-                <Text variant="bodyMd" fontWeight="semibold">
-                  {product.title}
-                </Text>
-                <Text variant="bodySm" color="subdued">
-                  {product.vendor} • {product.productType}
-                </Text>
-                <Text variant="bodySm" color="subdued">
-                  Status: {product.status} • Inventory: {product.totalInventory}
-                </Text>
-              </BlockStack>
-            </InlineStack>
-          </BlockStack>
-        </InlineStack>
+        <BlockStack gap="050">
+          <Text variant="bodyMd" fontWeight="semibold">
+            {product.title}
+          </Text>
+          <Text variant="bodySm" color="subdued">
+            {product.vendor} • {product.productType}
+          </Text>
+          <Text variant="bodySm" color="subdued">
+            Status: {product.status} • Inventory: {product.totalInventory}
+          </Text>
+        </BlockStack>
       </ResourceItem>
     );
-  }, [selectedProducts, handleProductSelection]);
+  }, []);
 
   const currentPageProductIds = products.map(product => product.id);
   const allCurrentSelected = currentPageProductIds.length > 0 &&
@@ -223,7 +200,8 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
       ]}
       large
     >
-      <BlockStack gap="400">
+      <Modal.Section>
+        <BlockStack gap="400">
         {selectedProducts.length > 0 && (
           <Banner status="info">
             {selectedProducts.length} product{selectedProducts.length !== 1 ? 's' : ''} selected for SEO analysis
@@ -237,7 +215,6 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
         )}
 
         <TextField
-          label="Search products"
           value={searchQuery}
           onChange={handleSearchChange}
           placeholder="Search by product name, vendor, or type..."
@@ -300,7 +277,8 @@ function ProductSelectionModal({ open, onConfirm, onCancel }) {
             </Text>
           </>
         )}
-      </BlockStack>
+        </BlockStack>
+      </Modal.Section>
     </Modal>
   );
 }
