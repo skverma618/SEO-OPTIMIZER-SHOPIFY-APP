@@ -85,7 +85,7 @@ function SEOSuggestionCard({
 
   return (
     <Card>
-      <Card.Section>
+      <div style={{ padding: '16px' }}>
         <BlockStack gap="300">
           {/* Header with selection and basic info */}
           <InlineStack gap="300" align="space-between">
@@ -174,14 +174,14 @@ function SEOSuggestionCard({
           >
             <BlockStack gap="400">
               <Card background="bg-surface-secondary">
-                <Card.Section>
+                <div style={{ padding: '16px' }}>
                   <BlockStack gap="300">
                     <Text variant="headingSm">Impact & Benefits</Text>
                     <Text variant="bodySm">
                       {suggestion.impact}
                     </Text>
                   </BlockStack>
-                </Card.Section>
+                </div>
               </Card>
 
               {/* Editable suggestion */}
@@ -215,11 +215,11 @@ function SEOSuggestionCard({
                   />
                 ) : (
                   <Card background="bg-surface-secondary">
-                    <Card.Section>
+                    <div style={{ padding: '16px' }}>
                       <Text variant="bodySm">
                         {editedValue}
                       </Text>
-                    </Card.Section>
+                    </div>
                   </Card>
                 )}
               </BlockStack>
@@ -229,7 +229,7 @@ function SEOSuggestionCard({
                 <BlockStack gap="300">
                   <Text variant="headingSm">Preview</Text>
                   <Card background="bg-surface-secondary">
-                    <Card.Section>
+                    <div style={{ padding: '16px' }}>
                       <BlockStack gap="200">
                         <div>
                           <Text variant="bodySm" fontWeight="medium" color="subdued">
@@ -248,14 +248,14 @@ function SEOSuggestionCard({
                           </Text>
                         </div>
                       </BlockStack>
-                    </Card.Section>
+                    </div>
                   </Card>
                 </BlockStack>
               )}
             </BlockStack>
           </Collapsible>
         </BlockStack>
-      </Card.Section>
+      </div>
     </Card>
   );
 }

@@ -173,11 +173,14 @@ function ScanResults() {
     navigate('/');
   }, [navigate]);
 
+if (!SEOSuggestionCard) {
+  console.error('SEOSuggestionCard failed to import!');
+}
 
   if (isLoading) {
     return (
       <Page title="Analyzing SEO...">
-        <Card sectioned>
+        <Card>
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
             <Spinner accessibilityLabel="Analyzing SEO" size="large" />
             <br />
@@ -248,7 +251,7 @@ function ScanResults() {
 
         <Card>
           <Tabs tabs={tabs} selected={selectedTab} onSelect={setSelectedTab}>
-            <Card.Section>
+            <div style={{ padding: '16px' }}>
               {currentSuggestions.length === 0 ? (
                 <EmptyState
                   heading="No suggestions in this category"
@@ -278,13 +281,13 @@ function ScanResults() {
                   )}
                 />
               )}
-            </Card.Section>
+            </div>
           </Tabs>
         </Card>
 
         {selectedSuggestions.length > 0 && (
           <Card>
-            <Card.Section>
+            <div style={{ padding: '16px' }}>
               <InlineStack gap="300" align="space-between">
                 <Text variant="bodyMd">
                   {selectedSuggestions.length} suggestion{selectedSuggestions.length !== 1 ? 's' : ''} selected
@@ -302,7 +305,7 @@ function ScanResults() {
                   </Button>
                 </ButtonGroup>
               </InlineStack>
-            </Card.Section>
+            </div>
           </Card>
         )}
       </BlockStack>
