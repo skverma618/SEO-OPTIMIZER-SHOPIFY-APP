@@ -28,11 +28,14 @@ import {
 } from '@shopify/polaris-icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SEOSuggestionCard from './SEOSuggestionCard';
+import { useShop } from '../contexts/ShopContext';
+import ApiService from '../services/api';
 
 
 function ScanResults() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { shop } = useShop();
   const [selectedSuggestions, setSelectedSuggestions] = useState([]);
   const [isApplying, setIsApplying] = useState(false);
   const [appliedSuggestions, setAppliedSuggestions] = useState([]);
@@ -175,27 +178,47 @@ function ScanResults() {
   }, [selectedSuggestions, selectedTab]);
 
   const handleApplySelected = useCallback(async () => {
+    if (!shop || selectedSuggestions.length === 0) return;
+    
     setIsApplying(true);
     
     try {
-      // TODO: Implement API calls to apply SEO suggestions
-      console.log('Applying suggestions:', selectedSuggestions);
+      // Transform selected suggestions to the format expected by the API
+      const suggestionsToApply = selectedSuggestions.map(suggestionId => {
+        // Find the suggestion in the results
+        const suggestion = allSuggestions.find(s => s.id === suggestionId);
+        if (!suggestion) return null;
+        
+        return {
+          suggestionId: suggestion.id,
+          productId: suggestion.productId,
+          field: suggestion.field,
+          value: suggestion.suggested,
+        };
+      }).filter(Boolean);
       
-      // Simulate API calls
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log('Applying suggestions:', suggestionsToApply);
       
-      // Mark suggestions as applied
-      setAppliedSuggestions(prev => [...prev, ...selectedSuggestions]);
-      setSelectedSuggestions([]);
+      // Make the API call
+      const response = await ApiService.applySEO(shop, suggestionsToApply);
       
-      // Show success message (would use Toast in real implementation)
-      console.log('Successfully applied SEO suggestions');
+      if (response.success) {
+        // Mark suggestions as applied
+        setAppliedSuggestions(prev => [...prev, ...selectedSuggestions]);
+        setSelectedSuggestions([]);
+        
+        console.log('Successfully applied SEO suggestions:', response.message);
+        // TODO: Show success toast notification
+      } else {
+        throw new Error(response.message || 'Failed to apply suggestions');
+      }
     } catch (error) {
       console.error('Error applying suggestions:', error);
+      // TODO: Show error toast notification
     } finally {
       setIsApplying(false);
     }
-  }, [selectedSuggestions]);
+  }, [selectedSuggestions, allSuggestions, shop]);
 
   const handleBackToDashboard = useCallback(() => {
     navigate('/');
