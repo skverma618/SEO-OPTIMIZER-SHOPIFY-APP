@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApiResponseDto = exports.PaginationDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
+const swagger_1 = require("@nestjs/swagger");
 class PaginationDto {
     page = 1;
     limit = 10;
@@ -19,6 +20,13 @@ class PaginationDto {
 }
 exports.PaginationDto = PaginationDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Page number for pagination',
+        example: 1,
+        minimum: 1,
+        default: 1,
+        required: false,
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_transformer_1.Transform)(({ value }) => parseInt(value)),
     (0, class_validator_1.IsNumber)(),
@@ -26,6 +34,13 @@ __decorate([
     __metadata("design:type", Number)
 ], PaginationDto.prototype, "page", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Number of items per page',
+        example: 10,
+        minimum: 1,
+        default: 10,
+        required: false,
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_transformer_1.Transform)(({ value }) => parseInt(value)),
     (0, class_validator_1.IsNumber)(),
@@ -33,6 +48,11 @@ __decorate([
     __metadata("design:type", Number)
 ], PaginationDto.prototype, "limit", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Search query string',
+        example: 'premium t-shirt',
+        required: false,
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
@@ -44,4 +64,34 @@ class ApiResponseDto {
     error;
 }
 exports.ApiResponseDto = ApiResponseDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Indicates if the request was successful',
+        example: true,
+    }),
+    __metadata("design:type", Boolean)
+], ApiResponseDto.prototype, "success", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Response data',
+        required: false,
+    }),
+    __metadata("design:type", Object)
+], ApiResponseDto.prototype, "data", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Success or informational message',
+        example: 'Operation completed successfully',
+        required: false,
+    }),
+    __metadata("design:type", String)
+], ApiResponseDto.prototype, "message", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Error message if request failed',
+        example: 'An error occurred while processing the request',
+        required: false,
+    }),
+    __metadata("design:type", String)
+], ApiResponseDto.prototype, "error", void 0);
 //# sourceMappingURL=common.dto.js.map

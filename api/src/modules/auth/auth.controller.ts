@@ -8,9 +8,11 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { ApiResponseDto } from '../../dto/common.dto';
 
+@ApiTags('auth')
 @Controller('api/auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
@@ -18,10 +20,57 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('install')
-  async install(@Query('shop') shop: string): Promise<ApiResponseDto<{ authUrl: string }>> {
+  @ApiOperation({
+    summary: 'Generate Shopify OAuth URL',
+    description:
+      'Generates the OAuth authorization URL for Shopify app installation',
+  })
+  @ApiQuery({
+    name: 'shop',
+    description: 'Shopify shop domain',
+    example: 'my-shop.myshopify.com',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Auth URL generated successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        data: {
+          type: 'object',
+          properties: {
+            authUrl: {
+              type: 'string',
+              example:
+                'https://my-shop.myshopify.com/admin/oauth/authorize?...',
+            },
+          },
+        },
+        message: {
+          type: 'string',
+          example: 'Auth URL generated successfully',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - Shop parameter is required',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
+  async install(
+    @Query('shop') shop: string,
+  ): Promise<ApiResponseDto<{ authUrl: string }>> {
     try {
       if (!shop) {
-        throw new HttpException('Shop parameter is required', HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          'Shop parameter is required',
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
       const authUrl = await this.authService.generateAuthUrl(shop);
@@ -42,6 +91,39 @@ export class AuthController {
 
   @Get('callback')
   @Redirect()
+  @ApiOperation({
+    summary: 'Handle Shopify OAuth callback',
+    description:
+      'Processes the OAuth callback from Shopify and completes the installation',
+  })
+  @ApiQuery({
+    name: 'code',
+    description: 'Authorization code from Shopify',
+    example: 'abc123def456',
+  })
+  @ApiQuery({
+    name: 'hmac',
+    description: 'HMAC signature for verification',
+    example: 'sha256=...',
+  })
+  @ApiQuery({
+    name: 'shop',
+    description: 'Shopify shop domain',
+    example: 'my-shop.myshopify.com',
+  })
+  @ApiQuery({
+    name: 'state',
+    description: 'State parameter for security',
+    example: 'random-state-string',
+  })
+  @ApiResponse({
+    status: 302,
+    description: 'Redirects to frontend with installation result',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - Missing required parameters',
+  })
   async callback(
     @Query('code') code: string,
     @Query('hmac') hmac: string,
@@ -57,7 +139,12 @@ export class AuthController {
       }
 
       // TODO: Verify HMAC signature for security
-      const result = await this.authService.handleCallback(code, shop, hmac, state);
+      const result = await this.authService.handleCallback(
+        code,
+        shop,
+        hmac,
+        state,
+      );
 
       if (result.success) {
         // Redirect to frontend with success
@@ -82,10 +169,53 @@ export class AuthController {
   }
 
   @Post('verify')
-  async verify(@Query('shop') shop: string): Promise<ApiResponseDto<{ isValid: boolean }>> {
+  @ApiOperation({
+    summary: 'Verify shop session',
+    description:
+      'Verifies if the shop has a valid session and is properly authenticated',
+  })
+  @ApiQuery({
+    name: 'shop',
+    description: 'Shopify shop domain',
+    example: 'my-shop.myshopify.com',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Shop session verification result',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        data: {
+          type: 'object',
+          properties: {
+            isValid: { type: 'boolean', example: true },
+          },
+        },
+        message: {
+          type: 'string',
+          example: 'Session is valid',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - Shop parameter is required',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
+  async verify(
+    @Query('shop') shop: string,
+  ): Promise<ApiResponseDto<{ isValid: boolean }>> {
     try {
       if (!shop) {
-        throw new HttpException('Shop parameter is required', HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          'Shop parameter is required',
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
       const isValid = await this.authService.verifyShopSession(shop);

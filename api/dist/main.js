@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@nestjs/core");
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
+const swagger_1 = require("@nestjs/swagger");
 const app_module_1 = require("./app.module");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
@@ -22,9 +23,32 @@ async function bootstrap() {
         forbidNonWhitelisted: true,
     }));
     app.setGlobalPrefix('api');
+    const config = new swagger_1.DocumentBuilder()
+        .setTitle('SEO Optimizer API')
+        .setDescription('API for Shopify SEO optimization and analysis')
+        .setVersion('1.0')
+        .addTag('auth', 'Authentication endpoints')
+        .addTag('products', 'Product management endpoints')
+        .addTag('seo', 'SEO analysis and optimization endpoints')
+        .addBearerAuth({
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Enter JWT token',
+        in: 'header',
+    }, 'JWT-auth')
+        .build();
+    const document = swagger_1.SwaggerModule.createDocument(app, config);
+    swagger_1.SwaggerModule.setup('api/docs', app, document, {
+        swaggerOptions: {
+            persistAuthorization: true,
+        },
+    });
     const port = configService.get('PORT') || 3000;
     await app.listen(port);
     console.log(`🚀 SEO Optimizer API is running on: http://localhost:${port}`);
+    console.log(`📚 Swagger documentation available at: http://localhost:${port}/api/docs`);
     console.log(`📚 Environment: ${configService.get('NODE_ENV')}`);
 }
 bootstrap();
