@@ -1,35 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { AppProvider } from '@shopify/polaris';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import '@shopify/polaris/build/esm/styles.css';
+
+// Import components
+import Dashboard from './components/Dashboard';
+import ScanResults from './components/ScanResults';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <AppProvider
+      i18n={{
+        Polaris: {
+          Avatar: {
+            label: 'Avatar',
+            labelWithInitials: 'Avatar with initials {initials}',
+          },
+          ContextualSaveBar: {
+            save: 'Save',
+            discard: 'Discard',
+          },
+          TextField: {
+            characterCount: '{count} characters',
+          },
+          TopBar: {
+            toggleMenuLabel: 'Toggle menu',
+            SearchField: {
+              clearButtonLabel: 'Clear',
+              search: 'Search',
+            },
+          },
+          Modal: {
+            iFrameTitle: 'body markup',
+          },
+          Frame: {
+            skipToContent: 'Skip to content',
+            navigationLabel: 'Navigation',
+            Navigation: {
+              closeMobileNavigationLabel: 'Close navigation',
+            },
+          },
+        },
+      }}
+    >
+      <Router>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/results" element={<ScanResults />} />
+        </Routes>
+      </Router>
+    </AppProvider>
+  );
 }
 
-export default App
+export default App;
