@@ -43,3 +43,45 @@ export declare class ApplySuggestionDto {
 export declare class ApplyBulkSuggestionsDto {
     suggestions: ApplySuggestionDto[];
 }
+export declare class ProductAnalysisInputDto {
+    productId: string;
+    productTitle: string;
+    productDescription: string;
+}
+export declare class ProductSeoAnalysisInputDto {
+    productId: string;
+    productSeoTitle: string;
+    productSeoDescription: string;
+}
+export declare class ProductImageAnalysisInputDto {
+    productId: string;
+    productImageId: string;
+    productImageAltText: string;
+}
+export declare class ProductMetaFieldAnalysisInputDto {
+    productId: string;
+    productMetaId: string;
+    productMetaValue: string;
+}
+export declare class AnalysisResultDto {
+    score: number;
+    suggestions: SuggestionDto[];
+    analysisType: string;
+    feedback: string;
+}
+export declare class ParallelAnalysisResultDto {
+    productId: string;
+    overallScore: number;
+    productContentAnalysis: AnalysisResultDto;
+    seoMetadataAnalysis: AnalysisResultDto;
+    imageAnalysis: AnalysisResultDto;
+    metafieldsAnalysis: AnalysisResultDto;
+    allSuggestions: SuggestionDto[];
+    executionTime: number;
+}
+export declare class ParallelAnalysisInputDto {
+    productContent: ProductAnalysisInputDto;
+    seoMetadata: ProductSeoAnalysisInputDto;
+    images: ProductImageAnalysisInputDto[];
+    metafields: ProductMetaFieldAnalysisInputDto[];
+}
