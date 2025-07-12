@@ -3,12 +3,14 @@ import { Shop } from '../../entities/shop.entity';
 import { ScanHistory } from '../../entities/scan-history.entity';
 import { ShopifyService } from '../shopify/shopify.service';
 import { ApplySuggestionDto } from '../../dto/seo.dto';
+import { SimplifiedSeoAnalysisService } from './simplified-seo-analysis.service';
 export declare class SeoService {
     private shopRepository;
     private scanHistoryRepository;
     private shopifyService;
+    private simplifiedSeoAnalysisService;
     private readonly logger;
-    constructor(shopRepository: Repository<Shop>, scanHistoryRepository: Repository<ScanHistory>, shopifyService: ShopifyService);
+    constructor(shopRepository: Repository<Shop>, scanHistoryRepository: Repository<ScanHistory>, shopifyService: ShopifyService, simplifiedSeoAnalysisService: SimplifiedSeoAnalysisService);
     scanEntireStore(shopDomain: string): Promise<{
         scanId: string;
         totalProducts: any;

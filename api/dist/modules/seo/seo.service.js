@@ -20,15 +20,18 @@ const typeorm_2 = require("typeorm");
 const shop_entity_1 = require("../../entities/shop.entity");
 const scan_history_entity_1 = require("../../entities/scan-history.entity");
 const shopify_service_1 = require("../shopify/shopify.service");
+const simplified_seo_analysis_service_1 = require("./simplified-seo-analysis.service");
 let SeoService = SeoService_1 = class SeoService {
     shopRepository;
     scanHistoryRepository;
     shopifyService;
+    simplifiedSeoAnalysisService;
     logger = new common_1.Logger(SeoService_1.name);
-    constructor(shopRepository, scanHistoryRepository, shopifyService) {
+    constructor(shopRepository, scanHistoryRepository, shopifyService, simplifiedSeoAnalysisService) {
         this.shopRepository = shopRepository;
         this.scanHistoryRepository = scanHistoryRepository;
         this.shopifyService = shopifyService;
+        this.simplifiedSeoAnalysisService = simplifiedSeoAnalysisService;
     }
     async scanEntireStore(shopDomain) {
         try {
@@ -148,12 +151,21 @@ let SeoService = SeoService_1 = class SeoService {
         return products;
     }
     async analyzeProductsForSEO(products) {
-        return products.map(product => ({
-            productId: product.id,
-            title: product.title,
-            handle: product.handle,
-            suggestions: this.generateMockSuggestions(product),
-        }));
+        try {
+            this.logger.log(`Starting SEO analysis for ${products.length} products`);
+            const analysisResults = await this.simplifiedSeoAnalysisService.analyzeProductsSimplified(products);
+            this.logger.log(`Completed SEO analysis for ${products.length} products`);
+            return analysisResults;
+        }
+        catch (error) {
+            this.logger.error('Error in SEO analysis, falling back to mock suggestions', error);
+            return products.map(product => ({
+                productId: product.id,
+                title: product.title,
+                handle: product.handle,
+                suggestions: this.generateMockSuggestions(product),
+            }));
+        }
     }
     generateMockSuggestions(product) {
         const suggestions = [];
@@ -236,6 +248,7 @@ exports.SeoService = SeoService = SeoService_1 = __decorate([
     __param(1, (0, typeorm_1.InjectRepository)(scan_history_entity_1.ScanHistory)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
-        shopify_service_1.ShopifyService])
+        shopify_service_1.ShopifyService,
+        simplified_seo_analysis_service_1.SimplifiedSeoAnalysisService])
 ], SeoService);
 //# sourceMappingURL=seo.service.js.map

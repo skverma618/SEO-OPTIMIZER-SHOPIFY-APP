@@ -38,7 +38,7 @@ exports.AppModule = AppModule = __decorate([
                     password: configService.get('DATABASE_PASSWORD'),
                     database: configService.get('DATABASE_NAME'),
                     entities: [shop_entity_1.Shop, scan_history_entity_1.ScanHistory],
-                    synchronize: false,
+                    synchronize: true,
                     migrations: ['dist/migrations/*.js'],
                     migrationsRun: false,
                     logging: configService.get('NODE_ENV') === 'development',
