@@ -16,10 +16,23 @@ async function bootstrap() {
     origin: [
       configService.get('FRONTEND_URL') || 'http://localhost:5173',
       /\.shopify\.com$/,
+      /\.myshopify\.com$/,
+      'https://admin.shopify.com',
+      /^https:\/\/.*\.shopify\.com$/,
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Shopify-Access-Token'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Shopify-Access-Token',
+      'X-Requested-With',
+      'Accept',
+      'Origin',
+      'Referer',
+      'User-Agent',
+    ],
     credentials: true,
+    optionsSuccessStatus: 200,
   });
 
   // Serve static files from the client build directory

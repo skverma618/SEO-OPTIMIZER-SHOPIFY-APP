@@ -168,7 +168,7 @@ export class AuthController {
     }
   }
 
-  @Post('verify')
+  @Get('verify')
   @ApiOperation({
     summary: 'Verify shop session',
     description:

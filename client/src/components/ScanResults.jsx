@@ -27,70 +27,6 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import SEOSuggestionCard from './SEOSuggestionCard';
 
-// Mock SEO analysis results
-const mockSEOResults = [
-  {
-    id: 'product-1',
-    title: 'Premium Wireless Headphones',
-    handle: 'premium-wireless-headphones',
-    image: { url: 'https://picsum.photos/80/80?random=1', altText: 'Headphones' },
-    suggestions: [
-      {
-        id: 'title-1',
-        type: 'title',
-        priority: 'high',
-        current: 'Premium Wireless Headphones',
-        suggested: 'Premium Wireless Bluetooth Headphones - Noise Cancelling',
-        reason: 'Add target keywords "Bluetooth" and "Noise Cancelling" to improve search visibility',
-        impact: 'Could improve search ranking for high-volume keywords',
-      },
-      {
-        id: 'description-1',
-        type: 'description',
-        priority: 'medium',
-        current: 'Great headphones for music.',
-        suggested: 'Experience premium sound quality with our wireless Bluetooth headphones featuring active noise cancellation, 30-hour battery life, and comfortable over-ear design.',
-        reason: 'Current description is too short and lacks important product features',
-        impact: 'Better descriptions increase click-through rates by 15-25%',
-      },
-      {
-        id: 'alt-text-1',
-        type: 'alt-text',
-        priority: 'medium',
-        current: '',
-        suggested: 'Black wireless Bluetooth headphones with noise cancelling technology',
-        reason: 'Missing alt text hurts accessibility and SEO',
-        impact: 'Improves image search visibility and accessibility compliance',
-      },
-    ],
-  },
-  {
-    id: 'product-2',
-    title: 'Organic Cotton T-Shirt',
-    handle: 'organic-cotton-t-shirt',
-    image: { url: 'https://picsum.photos/80/80?random=2', altText: 'T-shirt' },
-    suggestions: [
-      {
-        id: 'title-2',
-        type: 'title',
-        priority: 'high',
-        current: 'Organic Cotton T-Shirt',
-        suggested: 'Organic Cotton T-Shirt - Sustainable Eco-Friendly Apparel',
-        reason: 'Add trending keywords "Sustainable" and "Eco-Friendly"',
-        impact: 'Target growing eco-conscious consumer market',
-      },
-      {
-        id: 'meta-desc-2',
-        type: 'meta-description',
-        priority: 'high',
-        current: '',
-        suggested: 'Shop our premium organic cotton t-shirt made from 100% sustainable materials. Soft, comfortable, and eco-friendly. Available in multiple colors and sizes.',
-        reason: 'Missing meta description reduces search engine visibility',
-        impact: 'Meta descriptions can improve click-through rates by up to 30%',
-      },
-    ],
-  },
-];
 
 function ScanResults() {
   const location = useLocation();
@@ -103,12 +39,38 @@ function ScanResults() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading results
-    setTimeout(() => {
-      setResults(mockSEOResults);
+    // Get the real data from location state
+    const stateData = location.state;
+    console.log('SEO stateData', stateData)
+    if (stateData && stateData.seoResults) {
+      console.log('SEO Results received:', stateData.seoResults);
+      
+      // Transform the API response to match the component's expected format
+      const transformedResults = stateData.seoResults.results.map(product => ({
+        id: product.productId,
+        title: product.title,
+        handle: product.handle,
+        image: { url: 'https://picsum.photos/80/80?random=' + Math.random(), altText: product.title },
+        suggestions: product.suggestions.map(suggestion => ({
+          id: suggestion.id,
+          type: suggestion.type,
+          priority: suggestion.priority,
+          field: suggestion.field,
+          current: suggestion.current,
+          suggested: suggestion.suggested,
+          reason: suggestion.reason,
+          impact: suggestion.impact,
+        }))
+      }));
+      
+      setResults(transformedResults);
       setIsLoading(false);
-    }, 1000);
-  }, []);
+    } else {
+      // If no data is passed, redirect back to dashboard
+      console.error('No SEO results data found in location state');
+      navigate('/');
+    }
+  }, [location.state, navigate]);
 
   const allSuggestions = results.flatMap(product => 
     product.suggestions.map(suggestion => ({

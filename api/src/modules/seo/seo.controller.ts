@@ -170,7 +170,8 @@ export class SeoController {
   @Post('analyze')
   @ApiOperation({
     summary: 'Analyze products for SEO issues',
-    description: 'Analyzes specific products for SEO opportunities and returns suggestions',
+    description:
+      'Analyzes specific products for SEO opportunities and returns suggestions',
   })
   @ApiQuery({
     name: 'shop',

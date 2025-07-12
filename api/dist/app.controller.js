@@ -19,9 +19,6 @@ let AppController = class AppController {
     serveApp(res) {
         res.sendFile((0, path_1.join)(__dirname, '..', '..', 'client', 'dist', 'index.html'));
     }
-    serveFallback(res) {
-        res.sendFile((0, path_1.join)(__dirname, '..', '..', 'client', 'dist', 'index.html'));
-    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -31,13 +28,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "serveApp", null);
-__decorate([
-    (0, common_1.Get)('*'),
-    __param(0, (0, common_1.Res)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], AppController.prototype, "serveFallback", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)()
 ], AppController);

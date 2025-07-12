@@ -177,7 +177,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "callback", null);
 __decorate([
-    (0, common_1.Post)('verify'),
+    (0, common_1.Get)('verify'),
     (0, swagger_1.ApiOperation)({
         summary: 'Verify shop session',
         description: 'Verifies if the shop has a valid session and is properly authenticated',

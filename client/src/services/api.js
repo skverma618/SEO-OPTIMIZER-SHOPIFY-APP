@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 class ApiService {
   constructor() {
@@ -39,7 +39,7 @@ class ApiService {
 
   async verifyShopSession(shop) {
     return this.request(`/api/auth/verify?shop=${encodeURIComponent(shop)}`, {
-      method: 'POST',
+      method: 'GET',
     });
   }
 
