@@ -7,8 +7,7 @@ import {
   BlockStack,
   InlineStack,
   Badge,
-  ResourceList,
-  ResourceItem,
+  DataTable,
   Checkbox,
   ButtonGroup,
   Banner,
@@ -16,6 +15,8 @@ import {
   EmptyState,
   Tabs,
   Icon,
+  Modal,
+  Avatar,
 } from '@shopify/polaris';
 import {
   CheckIcon,
@@ -23,6 +24,7 @@ import {
   EditIcon,
   ImageIcon,
   SearchIcon,
+  ViewIcon,
 } from '@shopify/polaris-icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SEOSuggestionCard from './SEOSuggestionCard';
@@ -37,6 +39,9 @@ function ScanResults() {
   const [selectedTab, setSelectedTab] = useState(0);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalProduct, setModalProduct] = useState(null);
 
   useEffect(() => {
     // Get the real data from location state
@@ -118,13 +123,36 @@ function ScanResults() {
 
   const handleSuggestionSelection = useCallback((suggestionId) => {
     setSelectedSuggestions(prev => {
-      if (prev.includes(suggestionId)) {
-        return prev.filter(id => id !== suggestionId);
-      } else {
-        return [...prev, suggestionId];
-      }
+      const newSelection = prev.includes(suggestionId)
+        ? prev.filter(id => id !== suggestionId)
+        : [...prev, suggestionId];
+      
+      // Update product selection based on suggestion selection
+      setSelectedProducts(currentProducts => {
+        const updatedProducts = [...currentProducts];
+        
+        // Check each product to see if all its suggestions are selected
+        results.forEach(product => {
+          const productSuggestionIds = product.suggestions.map(s => s.id);
+          const allSuggestionsSelected = productSuggestionIds.every(id => newSelection.includes(id));
+          const isProductSelected = updatedProducts.includes(product.id);
+          
+          if (allSuggestionsSelected && !isProductSelected) {
+            updatedProducts.push(product.id);
+          } else if (!allSuggestionsSelected && isProductSelected) {
+            const index = updatedProducts.indexOf(product.id);
+            if (index > -1) {
+              updatedProducts.splice(index, 1);
+            }
+          }
+        });
+        
+        return updatedProducts;
+      });
+      
+      return newSelection;
     });
-  }, []);
+  }, [results]);
 
   const handleSelectAll = useCallback(() => {
     const currentSuggestions = getCurrentTabSuggestions();
@@ -172,6 +200,47 @@ function ScanResults() {
   const handleBackToDashboard = useCallback(() => {
     navigate('/');
   }, [navigate]);
+
+  const handleViewSuggestions = useCallback((product) => {
+    setModalProduct(product);
+    setIsModalOpen(true);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+    setModalProduct(null);
+  }, []);
+
+  const handleProductSelection = useCallback((productId, isSelected) => {
+    // Find all suggestions for this product
+    const product = results.find(p => p.id === productId);
+    const productSuggestionIds = product ? product.suggestions.map(s => s.id) : [];
+    
+    setSelectedProducts(prev => {
+      if (isSelected) {
+        return [...prev, productId];
+      } else {
+        return prev.filter(id => id !== productId);
+      }
+    });
+    
+    // Also select/deselect all suggestions for this product
+    setSelectedSuggestions(prev => {
+      if (isSelected) {
+        // Add all product suggestions to selected suggestions
+        const newSelection = [...prev];
+        productSuggestionIds.forEach(suggestionId => {
+          if (!newSelection.includes(suggestionId)) {
+            newSelection.push(suggestionId);
+          }
+        });
+        return newSelection;
+      } else {
+        // Remove all product suggestions from selected suggestions
+        return prev.filter(id => !productSuggestionIds.includes(id));
+      }
+    });
+  }, [results]);
 
 if (!SEOSuggestionCard) {
   console.error('SEOSuggestionCard failed to import!');
@@ -252,33 +321,57 @@ if (!SEOSuggestionCard) {
         <Card>
           <Tabs tabs={tabs} selected={selectedTab} onSelect={setSelectedTab}>
             <div style={{ padding: '16px' }}>
-              {currentSuggestions.length === 0 ? (
+              {results.length === 0 ? (
                 <EmptyState
-                  heading="No suggestions in this category"
+                  heading="No products found"
                   image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
                 >
-                  <p>All suggestions in this priority level have been addressed.</p>
+                  <p>No products with SEO suggestions were found.</p>
                 </EmptyState>
               ) : (
-                <ResourceList
-                  resourceName={{ singular: 'suggestion', plural: 'suggestions' }}
-                  items={currentSuggestions}
-                  selectedItems={selectedSuggestions}
-                  onSelectionChange={setSelectedSuggestions}
-                  renderItem={(suggestion) => (
-                    <ResourceItem
-                      id={suggestion.id}
-                      accessibilityLabel={`SEO suggestion for ${suggestion.productTitle}`}
-                    >
-                      <SEOSuggestionCard
-                        suggestion={suggestion}
-                        isSelected={selectedSuggestions.includes(suggestion.id)}
-                        isApplied={appliedSuggestions.includes(suggestion.id)}
-                        onSelect={() => handleSuggestionSelection(suggestion.id)}
-                        onApply={() => handleApplySelected()}
-                      />
-                    </ResourceItem>
-                  )}
+                <DataTable
+                  columnContentTypes={['text', 'text', 'numeric', 'text']}
+                  headings={['', 'Product', 'Total Suggestions', 'Actions']}
+                  rows={results.map((product) => {
+                    const filteredSuggestions = getCurrentTabSuggestions().filter(s => s.productId === product.id);
+                    const productSuggestionIds = product.suggestions.map(s => s.id);
+                    const allSuggestionsSelected = productSuggestionIds.every(id => selectedSuggestions.includes(id));
+                    const isProductSelected = allSuggestionsSelected && productSuggestionIds.length > 0;
+                    
+                    return [
+                      <Checkbox
+                        checked={isProductSelected}
+                        onChange={(checked) => handleProductSelection(product.id, checked)}
+                        ariaLabel={`Select ${product.title}`}
+                      />,
+                      <InlineStack gap="300" align="start">
+                        <Avatar
+                          source={product.image?.url}
+                          alt={product.image?.altText || product.title}
+                          size="medium"
+                        />
+                        <BlockStack gap="100">
+                          <Text variant="bodyMd" fontWeight="semibold">
+                            {product.title}
+                          </Text>
+                          <Text variant="bodySm" color="subdued">
+                            {product.handle}
+                          </Text>
+                        </BlockStack>
+                      </InlineStack>,
+                      <Badge status={filteredSuggestions.length > 0 ? 'attention' : 'success'}>
+                        {filteredSuggestions.length} suggestions
+                      </Badge>,
+                      <Button
+                        size="slim"
+                        icon={ViewIcon}
+                        onClick={() => handleViewSuggestions(product)}
+                        disabled={filteredSuggestions.length === 0}
+                      >
+                        View Details
+                      </Button>
+                    ];
+                  })}
                 />
               )}
             </div>
@@ -309,6 +402,48 @@ if (!SEOSuggestionCard) {
           </Card>
         )}
       </BlockStack>
+
+      {/* Modal for viewing product suggestions */}
+      {isModalOpen && modalProduct && (
+        <Modal
+          open={isModalOpen}
+          onClose={handleCloseModal}
+          title={`SEO Suggestions for ${modalProduct.title}`}
+          primaryAction={{
+            content: 'Close',
+            onAction: handleCloseModal,
+          }}
+          large
+        >
+          <Modal.Section>
+            <BlockStack gap="400">
+              {modalProduct.suggestions.length === 0 ? (
+                <EmptyState
+                  heading="No suggestions for this product"
+                  image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
+                >
+                  <p>This product is already well-optimized for SEO.</p>
+                </EmptyState>
+              ) : (
+                modalProduct.suggestions.map((suggestion) => (
+                  <SEOSuggestionCard
+                    key={suggestion.id}
+                    suggestion={{
+                      ...suggestion,
+                      productId: modalProduct.id,
+                      productTitle: modalProduct.title,
+                    }}
+                    isSelected={selectedSuggestions.includes(suggestion.id)}
+                    isApplied={appliedSuggestions.includes(suggestion.id)}
+                    onSelect={() => handleSuggestionSelection(suggestion.id)}
+                    onApply={() => handleApplySelected()}
+                  />
+                ))
+              )}
+            </BlockStack>
+          </Modal.Section>
+        </Modal>
+      )}
     </Page>
   );
 }
