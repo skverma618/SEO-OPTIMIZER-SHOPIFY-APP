@@ -313,6 +313,7 @@ export class SeoService {
           );
 
         case 'Description':
+        case 'description':
           console.log("INSIDE SWITCH CASE DESCRIPTION : ", suggestion)
           console.log("OTHER INFO : ", accessToken, shopDomain )
           return await this.shopifyService.updateProduct(

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ParallelAnalysisInputDto = exports.ParallelAnalysisResultDto = exports.AnalysisResultDto = exports.ProductMetaFieldAnalysisInputDto = exports.ProductImageAnalysisInputDto = exports.ProductSeoAnalysisInputDto = exports.ProductAnalysisInputDto = exports.ApplyBulkSuggestionsNewDto = exports.ProductBulkSuggestionsDto = exports.ApplyBulkSuggestionsDto = exports.ApplySuggestionDto = exports.ScanResultDto = exports.ProductScanResultDto = exports.SuggestionDto = exports.ScanProductsDto = exports.SuggestionPriority = exports.SuggestionType = void 0;
+exports.ParallelAnalysisInputDto = exports.ParallelAnalysisResultDto = exports.AnalysisResultDto = exports.FieldScoreDto = exports.ProductMetaFieldAnalysisInputDto = exports.ProductImageAnalysisInputDto = exports.ProductSeoAnalysisInputDto = exports.ProductAnalysisInputDto = exports.ApplyBulkSuggestionsNewDto = exports.ProductBulkSuggestionsDto = exports.ApplyBulkSuggestionsDto = exports.ApplySuggestionDto = exports.ScanResultDto = exports.ProductScanResultDto = exports.SuggestionDto = exports.ScanProductsDto = exports.SuggestionPriority = exports.SuggestionType = void 0;
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
 var SuggestionType;
@@ -51,6 +51,7 @@ class SuggestionDto {
     suggested;
     reason;
     impact;
+    imageUrl;
 }
 exports.SuggestionDto = SuggestionDto;
 __decorate([
@@ -112,6 +113,14 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], SuggestionDto.prototype, "impact", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Image URL for image-related suggestions',
+        example: 'https://cdn.shopify.com/s/files/1/0123/4567/products/product-image.jpg',
+        required: false,
+    }),
+    __metadata("design:type", String)
+], SuggestionDto.prototype, "imageUrl", void 0);
 class ProductScanResultDto {
     productId;
     title;
@@ -347,6 +356,7 @@ __decorate([
 class ProductImageAnalysisInputDto {
     productId;
     productImageId;
+    productImageUrl;
     productImageAltText;
 }
 exports.ProductImageAnalysisInputDto = ProductImageAnalysisInputDto;
@@ -366,6 +376,16 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ProductImageAnalysisInputDto.prototype, "productImageId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product image URL',
+        example: 'https://cdn.shopify.com/s/files/1/0123/4567/products/product-image.jpg',
+        required: false,
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], ProductImageAnalysisInputDto.prototype, "productImageUrl", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Product image alt text',
@@ -404,11 +424,41 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ProductMetaFieldAnalysisInputDto.prototype, "productMetaValue", void 0);
+class FieldScoreDto {
+    field;
+    score;
+    description;
+}
+exports.FieldScoreDto = FieldScoreDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Field name being scored',
+        example: 'Product Title',
+    }),
+    __metadata("design:type", String)
+], FieldScoreDto.prototype, "field", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Score for this specific field out of 100',
+        example: 85,
+        minimum: 0,
+        maximum: 100,
+    }),
+    __metadata("design:type", Number)
+], FieldScoreDto.prototype, "score", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Description explaining the score for this field',
+        example: 'Title length is optimal and includes relevant keywords',
+    }),
+    __metadata("design:type", String)
+], FieldScoreDto.prototype, "description", void 0);
 class AnalysisResultDto {
     score;
     suggestions;
     analysisType;
     feedback;
+    fieldScores;
 }
 exports.AnalysisResultDto = AnalysisResultDto;
 __decorate([
@@ -441,6 +491,14 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], AnalysisResultDto.prototype, "feedback", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Individual field scores breakdown',
+        type: [FieldScoreDto],
+        required: false,
+    }),
+    __metadata("design:type", Array)
+], AnalysisResultDto.prototype, "fieldScores", void 0);
 class ParallelAnalysisResultDto {
     productId;
     overallScore;
@@ -515,6 +573,7 @@ class ParallelAnalysisInputDto {
     seoMetadata;
     images;
     metafields;
+    brandMapping;
 }
 exports.ParallelAnalysisInputDto = ParallelAnalysisInputDto;
 __decorate([
@@ -545,4 +604,11 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], ParallelAnalysisInputDto.prototype, "metafields", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Brand mapping information for brand-aware suggestions',
+        required: false,
+    }),
+    __metadata("design:type", Object)
+], ParallelAnalysisInputDto.prototype, "brandMapping", void 0);
 //# sourceMappingURL=seo.dto.js.map

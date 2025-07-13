@@ -21,6 +21,7 @@ export declare class SuggestionDto {
     suggested: string;
     reason: string;
     impact?: string;
+    imageUrl?: string;
 }
 export declare class ProductScanResultDto {
     productId: string;
@@ -65,6 +66,7 @@ export declare class ProductSeoAnalysisInputDto {
 export declare class ProductImageAnalysisInputDto {
     productId: string;
     productImageId: string;
+    productImageUrl?: string;
     productImageAltText: string;
 }
 export declare class ProductMetaFieldAnalysisInputDto {
@@ -72,11 +74,17 @@ export declare class ProductMetaFieldAnalysisInputDto {
     productMetaId: string;
     productMetaValue: string;
 }
+export declare class FieldScoreDto {
+    field: string;
+    score: number;
+    description: string;
+}
 export declare class AnalysisResultDto {
     score: number;
     suggestions: SuggestionDto[];
     analysisType: string;
     feedback: string;
+    fieldScores?: FieldScoreDto[];
 }
 export declare class ParallelAnalysisResultDto {
     productId: string;
@@ -93,4 +101,5 @@ export declare class ParallelAnalysisInputDto {
     seoMetadata: ProductSeoAnalysisInputDto;
     images: ProductImageAnalysisInputDto[];
     metafields: ProductMetaFieldAnalysisInputDto[];
+    brandMapping?: any;
 }
