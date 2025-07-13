@@ -22,8 +22,8 @@ export class MetafieldsAnalysisWorker {
   constructor(private configService: ConfigService) {
     this.llm = new ChatOpenAI({
       openAIApiKey: this.configService.get<string>('OPENAI_API_KEY'),
-      modelName: 'gpt-4o-mini',
-      temperature: 0.3,
+      modelName: this.configService.get<string>('OPENAI_MODEL_NAME') || 'gpt-4o-mini',
+      temperature: parseFloat(this.configService.get<string>('OPENAI_TEMPERATURE') || '0.3'),
     });
   }
 
@@ -55,7 +55,7 @@ export class MetafieldsAnalysisWorker {
 
       // Transform suggestions to include proper IDs and types
       const suggestions = response.suggestions.map((suggestion: any, index: number) => ({
-        id: `metafield-${suggestion.metaId || inputs[index]?.productMetaId || index}`,
+        id: suggestion.metaId || inputs[index]?.productMetaId || `${index + 1}`,
         type: this.mapSuggestionType(suggestion.type),
         priority: suggestion.priority as SuggestionPriority,
         field: suggestion.field,

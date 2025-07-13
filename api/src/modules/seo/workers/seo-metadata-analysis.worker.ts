@@ -22,8 +22,8 @@ export class SeoMetadataAnalysisWorker {
   constructor(private configService: ConfigService) {
     this.llm = new ChatOpenAI({
       openAIApiKey: this.configService.get<string>('OPENAI_API_KEY'),
-      modelName: 'gpt-4o-mini',
-      temperature: 0.3,
+      modelName: this.configService.get<string>('OPENAI_MODEL_NAME') || 'gpt-4o-mini',
+      temperature: parseFloat(this.configService.get<string>('OPENAI_TEMPERATURE') || '0.3'),
     });
   }
 
@@ -54,7 +54,7 @@ export class SeoMetadataAnalysisWorker {
 
       // Transform suggestions to include proper IDs
       const suggestions = analysisResult.suggestions.map((suggestion, index) => ({
-        id: `${suggestion.type}-${input.productId}-${index}`,
+        id: input.productId,
         type: this.mapSuggestionType(suggestion.type),
         priority: suggestion.priority as SuggestionPriority,
         field: suggestion.field,
