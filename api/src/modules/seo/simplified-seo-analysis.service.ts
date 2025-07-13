@@ -81,12 +81,17 @@ export class SimplifiedSeoAnalysisService {
       }
       
       // Map suggestion scores to actual LLM field scores
-      const suggestions: SimplifiedSuggestion[] = result.allSuggestions.map(suggestion => {
+      const suggestions: SimplifiedSuggestion[] = result.allSuggestions.map((suggestion, index) => {
         // Find the corresponding field score for this suggestion
         const fieldScore = this.findFieldScoreForSuggestion(suggestion, allFieldScores);
         
+        console.log("FIELD SCORE COMING IN : ", fieldScore)
+        
+        // Generate unique ID by combining productId, type, field, and index
+        const uniqueId = `${result.productId}-${suggestion.type}-${suggestion.field.replace(/\s+/g, '-').toLowerCase()}-${index}`;
+        
         return {
-          id: suggestion.id,
+          id: uniqueId,
           type: suggestion.type,
           priority: suggestion.priority,
           score: fieldScore || this.calculateSuggestionScore(suggestion.priority, suggestion.type), // Use LLM field score or fallback

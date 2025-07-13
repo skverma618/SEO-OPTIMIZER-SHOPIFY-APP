@@ -9,14 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ParallelAnalysisInputDto = exports.ParallelAnalysisResultDto = exports.AnalysisResultDto = exports.FieldScoreDto = exports.ProductMetaFieldAnalysisInputDto = exports.ProductImageAnalysisInputDto = exports.ProductSeoAnalysisInputDto = exports.ProductAnalysisInputDto = exports.ApplyBulkSuggestionsNewDto = exports.ProductBulkSuggestionsDto = exports.ApplyBulkSuggestionsDto = exports.ApplySuggestionDto = exports.ScanResultDto = exports.ProductScanResultDto = exports.SuggestionDto = exports.ScanProductsDto = exports.SuggestionPriority = exports.SuggestionType = void 0;
+exports.ParallelAnalysisInputDto = exports.ParallelAnalysisResultDto = exports.AnalysisResultDto = exports.FieldScoreDto = exports.ProductMetaFieldAnalysisInputDto = exports.ProductImageAnalysisInputDto = exports.ProductSeoAnalysisInputDto = exports.ProductAnalysisInputDto = exports.AnalysisHistoryDto = exports.PreviousSuggestionDto = exports.ApplyBulkSuggestionsNewDto = exports.ProductBulkSuggestionsDto = exports.ApplyBulkSuggestionsDto = exports.ApplySuggestionDto = exports.ScanResultDto = exports.ProductScanResultDto = exports.SuggestionDto = exports.ScanProductsDto = exports.SuggestionPriority = exports.SuggestionType = void 0;
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
 var SuggestionType;
 (function (SuggestionType) {
+    SuggestionType["PRODUCT_TITLE"] = "product-title";
+    SuggestionType["PRODUCT_DESCRIPTION"] = "product-description";
+    SuggestionType["META_TITLE"] = "meta-title";
+    SuggestionType["META_DESCRIPTION"] = "meta-description";
+    SuggestionType["IMAGE_ALT_TEXT"] = "image-alt-text";
+    SuggestionType["METAFIELD_TITLE"] = "metafield-title";
+    SuggestionType["METAFIELD_DESCRIPTION"] = "metafield-description";
+    SuggestionType["METAFIELD_KEYWORDS"] = "metafield-keywords";
+    SuggestionType["STRUCTURED_DATA"] = "structured-data";
+    SuggestionType["SCHEMA_MARKUP"] = "schema-markup";
     SuggestionType["TITLE"] = "title";
     SuggestionType["DESCRIPTION"] = "description";
-    SuggestionType["META_DESCRIPTION"] = "meta-description";
+    SuggestionType["SEO_TITLE"] = "seo-title";
+    SuggestionType["SEO_DESCRIPTION"] = "seo-description";
     SuggestionType["ALT_TEXT"] = "alt-text";
 })(SuggestionType || (exports.SuggestionType = SuggestionType = {}));
 var SuggestionPriority;
@@ -293,10 +304,97 @@ __decorate([
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
 ], ApplyBulkSuggestionsNewDto.prototype, "products", void 0);
+class PreviousSuggestionDto {
+    field;
+    suggestedContent;
+    generatedAt;
+    appliedAt;
+    originalScore;
+}
+exports.PreviousSuggestionDto = PreviousSuggestionDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Field that was previously suggested for',
+        example: 'Product Title',
+    }),
+    __metadata("design:type", String)
+], PreviousSuggestionDto.prototype, "field", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Previously suggested content',
+        example: 'Premium Quality Product - Best Price | Brand Name',
+    }),
+    __metadata("design:type", String)
+], PreviousSuggestionDto.prototype, "suggestedContent", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'When the suggestion was generated',
+        example: '2024-01-15T10:30:00Z',
+    }),
+    __metadata("design:type", Date)
+], PreviousSuggestionDto.prototype, "generatedAt", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'When the suggestion was applied (if applied)',
+        example: '2024-01-15T11:00:00Z',
+        required: false,
+    }),
+    __metadata("design:type", Date)
+], PreviousSuggestionDto.prototype, "appliedAt", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Score given when this suggestion was generated',
+        example: 45,
+        minimum: 0,
+        maximum: 100,
+        required: false,
+    }),
+    __metadata("design:type", Number)
+], PreviousSuggestionDto.prototype, "originalScore", void 0);
+class AnalysisHistoryDto {
+    score;
+    analyzedAt;
+    contentHash;
+    wasAiGenerated;
+}
+exports.AnalysisHistoryDto = AnalysisHistoryDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Score given during previous analysis',
+        example: 75,
+        minimum: 0,
+        maximum: 100,
+    }),
+    __metadata("design:type", Number)
+], AnalysisHistoryDto.prototype, "score", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'When the analysis was performed',
+        example: '2024-01-15T10:30:00Z',
+    }),
+    __metadata("design:type", Date)
+], AnalysisHistoryDto.prototype, "analyzedAt", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Hash of the content that was analyzed',
+        example: 'abc123def456',
+    }),
+    __metadata("design:type", String)
+], AnalysisHistoryDto.prototype, "contentHash", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Whether the content was AI-generated',
+        example: true,
+        required: false,
+    }),
+    __metadata("design:type", Boolean)
+], AnalysisHistoryDto.prototype, "wasAiGenerated", void 0);
 class ProductAnalysisInputDto {
     productId;
     productTitle;
     productDescription;
+    previousSuggestions;
+    analysisHistory;
 }
 exports.ProductAnalysisInputDto = ProductAnalysisInputDto;
 __decorate([
@@ -323,6 +421,24 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ProductAnalysisInputDto.prototype, "productDescription", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Previous suggestions for this product',
+        type: [PreviousSuggestionDto],
+        required: false,
+    }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Array)
+], ProductAnalysisInputDto.prototype, "previousSuggestions", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Analysis history for this product',
+        type: [AnalysisHistoryDto],
+        required: false,
+    }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Array)
+], ProductAnalysisInputDto.prototype, "analysisHistory", void 0);
 class ProductSeoAnalysisInputDto {
     productId;
     productSeoTitle;

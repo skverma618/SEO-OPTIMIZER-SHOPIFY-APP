@@ -270,7 +270,6 @@ export class SeoService {
       switch (suggestion.field) {
         case 'SEO Title':
         case 'seo.title':
-        case 'Title Tag':
           this.logger.log(`Updating SEO title for product ${suggestion.productId} with value: ${suggestion.value}`);
           const seoTitleResult = await this.shopifyService.updateProduct(
             shopDomain,
@@ -301,6 +300,7 @@ export class SeoService {
           );
 
         case 'Title':
+        case 'Title Tag':
         case 'Product Title':
           this.logger.log(`Updating product title for product ${suggestion.productId} with value: ${suggestion.value}`);
           return await this.shopifyService.updateProduct(

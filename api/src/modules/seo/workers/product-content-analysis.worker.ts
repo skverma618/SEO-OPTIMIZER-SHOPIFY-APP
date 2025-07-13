@@ -23,7 +23,7 @@ export class ProductContentAnalysisWorker {
     this.llm = new ChatOpenAI({
       openAIApiKey: this.configService.get<string>('OPENAI_API_KEY'),
       modelName: this.configService.get<string>('OPENAI_MODEL_NAME') || 'gpt-4o-mini',
-      temperature: parseFloat(this.configService.get<string>('OPENAI_TEMPERATURE') || '0.3'),
+      temperature: parseFloat(this.configService.get<string>('OPENAI_TEMPERATURE') || '0.2'),
     });
   }
 
@@ -56,8 +56,8 @@ export class ProductContentAnalysisWorker {
 
       // Transform suggestions to include proper IDs
       const suggestions = analysisResult.suggestions.map((suggestion, index) => ({
-        id: input.productId,
-        type: this.mapSuggestionType(suggestion.type),
+        id: `${input.productId}-${suggestion.type}-${suggestion.field.replace(/\s+/g, '-').toLowerCase()}-${index}`,
+        type: suggestion.type,
         priority: suggestion.priority as SuggestionPriority,
         field: suggestion.field,
         current: suggestion.current,
@@ -132,11 +132,13 @@ export class ProductContentAnalysisWorker {
   private mapSuggestionType(type: string): SuggestionType {
     switch (type.toLowerCase()) {
       case 'title':
-        return SuggestionType.TITLE;
+      case 'product-title':
+        return SuggestionType.PRODUCT_TITLE;
       case 'description':
-        return SuggestionType.DESCRIPTION;
+      case 'product-description':
+        return SuggestionType.PRODUCT_DESCRIPTION;
       default:
-        return SuggestionType.DESCRIPTION;
+        return SuggestionType.PRODUCT_DESCRIPTION;
     }
   }
 
@@ -150,7 +152,7 @@ export class ProductContentAnalysisWorker {
       titleScore = 45;
       suggestions.push({
         id: `title-${input.productId}-short`,
-        type: SuggestionType.TITLE,
+        type: SuggestionType.PRODUCT_TITLE,
         priority: SuggestionPriority.HIGH,
         field: 'Product Title',
         current: input.productTitle,
@@ -169,7 +171,7 @@ export class ProductContentAnalysisWorker {
       descriptionScore = 20;
       suggestions.push({
         id: `description-${input.productId}-missing`,
-        type: SuggestionType.DESCRIPTION,
+        type: SuggestionType.PRODUCT_DESCRIPTION,
         priority: SuggestionPriority.HIGH,
         field: 'Product Description',
         current: input.productDescription || 'No description available',
@@ -181,7 +183,7 @@ export class ProductContentAnalysisWorker {
       descriptionScore = 50;
       suggestions.push({
         id: `description-${input.productId}-short`,
-        type: SuggestionType.DESCRIPTION,
+        type: SuggestionType.PRODUCT_DESCRIPTION,
         priority: SuggestionPriority.MEDIUM,
         field: 'Product Description',
         current: input.productDescription,

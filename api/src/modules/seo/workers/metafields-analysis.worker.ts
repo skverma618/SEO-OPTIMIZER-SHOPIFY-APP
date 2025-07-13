@@ -23,7 +23,7 @@ export class MetafieldsAnalysisWorker {
     this.llm = new ChatOpenAI({
       openAIApiKey: this.configService.get<string>('OPENAI_API_KEY'),
       modelName: this.configService.get<string>('OPENAI_MODEL_NAME') || 'gpt-4o-mini',
-      temperature: parseFloat(this.configService.get<string>('OPENAI_TEMPERATURE') || '0.3'),
+      temperature: parseFloat(this.configService.get<string>('OPENAI_TEMPERATURE') || '0.1'),
     });
   }
 
@@ -130,13 +130,20 @@ export class MetafieldsAnalysisWorker {
   private mapSuggestionType(type: string): SuggestionType {
     switch (type.toLowerCase()) {
       case 'title':
-        return SuggestionType.TITLE;
+      case 'metafield-title':
+        return SuggestionType.METAFIELD_TITLE;
       case 'description':
-        return SuggestionType.DESCRIPTION;
-      case 'meta-description':
-        return SuggestionType.META_DESCRIPTION;
+      case 'metafield-description':
+        return SuggestionType.METAFIELD_DESCRIPTION;
+      case 'keywords':
+      case 'metafield-keywords':
+        return SuggestionType.METAFIELD_KEYWORDS;
+      case 'structured-data':
+        return SuggestionType.STRUCTURED_DATA;
+      case 'schema-markup':
+        return SuggestionType.SCHEMA_MARKUP;
       default:
-        return SuggestionType.META_DESCRIPTION;
+        return SuggestionType.STRUCTURED_DATA;
     }
   }
 

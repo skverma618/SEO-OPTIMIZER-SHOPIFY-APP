@@ -23,7 +23,7 @@ export class ImageAnalysisWorker {
     this.llm = new ChatOpenAI({
       openAIApiKey: this.configService.get<string>('OPENAI_API_KEY'),
       modelName: this.configService.get<string>('OPENAI_MODEL_NAME') || 'gpt-4o-mini',
-      temperature: parseFloat(this.configService.get<string>('OPENAI_TEMPERATURE') || '0.3'),
+      temperature: parseFloat(this.configService.get<string>('OPENAI_TEMPERATURE') || '0.2'),
     });
   }
 
@@ -78,7 +78,7 @@ export class ImageAnalysisWorker {
 
         return {
           id: suggestion.imageId || correspondingInput?.productImageId || `${index + 1}`,
-          type: SuggestionType.ALT_TEXT,
+          type: SuggestionType.IMAGE_ALT_TEXT,
           priority: suggestion.priority as SuggestionPriority,
           field: 'images.altText',
           current: suggestion.current,
@@ -165,7 +165,7 @@ export class ImageAnalysisWorker {
       if (!input.productImageAltText || input.productImageAltText.trim().length === 0) {
         suggestions.push({
           id: input.productImageId,
-          type: SuggestionType.ALT_TEXT,
+          type: SuggestionType.IMAGE_ALT_TEXT,
           priority: SuggestionPriority.HIGH,
           field: 'images.altText',
           current: '',

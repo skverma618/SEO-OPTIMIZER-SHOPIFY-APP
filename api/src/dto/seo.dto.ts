@@ -2,9 +2,29 @@ import { IsArray, IsString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum SuggestionType {
+  // Product Content Types
+  PRODUCT_TITLE = 'product-title',
+  PRODUCT_DESCRIPTION = 'product-description',
+  
+  // SEO/Meta Tags (these are the same thing)
+  META_TITLE = 'meta-title', // Same as SEO title - the <title> tag
+  META_DESCRIPTION = 'meta-description', // Same as SEO description - <meta name="description">
+  
+  // Image Types
+  IMAGE_ALT_TEXT = 'image-alt-text',
+  
+  // Metafield Types
+  METAFIELD_TITLE = 'metafield-title',
+  METAFIELD_DESCRIPTION = 'metafield-description',
+  METAFIELD_KEYWORDS = 'metafield-keywords',
+  STRUCTURED_DATA = 'structured-data',
+  SCHEMA_MARKUP = 'schema-markup',
+  
+  // Legacy types (for backward compatibility)
   TITLE = 'title',
   DESCRIPTION = 'description',
-  META_DESCRIPTION = 'meta-description',
+  SEO_TITLE = 'seo-title', // Alias for META_TITLE
+  SEO_DESCRIPTION = 'seo-description', // Alias for META_DESCRIPTION
   ALT_TEXT = 'alt-text',
 }
 
@@ -40,7 +60,7 @@ export class SuggestionDto {
     enum: SuggestionType,
     example: SuggestionType.TITLE,
   })
-  type: SuggestionType;
+  type: string;
 
   @ApiProperty({
     description: 'Priority level of the suggestion',
@@ -218,6 +238,72 @@ export class ApplyBulkSuggestionsNewDto {
   products: ProductBulkSuggestionsDto[];
 }
 
+// Content History Tracking DTOs
+export class PreviousSuggestionDto {
+  @ApiProperty({
+    description: 'Field that was previously suggested for',
+    example: 'Product Title',
+  })
+  field: string;
+
+  @ApiProperty({
+    description: 'Previously suggested content',
+    example: 'Premium Quality Product - Best Price | Brand Name',
+  })
+  suggestedContent: string;
+
+  @ApiProperty({
+    description: 'When the suggestion was generated',
+    example: '2024-01-15T10:30:00Z',
+  })
+  generatedAt: Date;
+
+  @ApiProperty({
+    description: 'When the suggestion was applied (if applied)',
+    example: '2024-01-15T11:00:00Z',
+    required: false,
+  })
+  appliedAt?: Date;
+
+  @ApiProperty({
+    description: 'Score given when this suggestion was generated',
+    example: 45,
+    minimum: 0,
+    maximum: 100,
+    required: false,
+  })
+  originalScore?: number;
+}
+
+export class AnalysisHistoryDto {
+  @ApiProperty({
+    description: 'Score given during previous analysis',
+    example: 75,
+    minimum: 0,
+    maximum: 100,
+  })
+  score: number;
+
+  @ApiProperty({
+    description: 'When the analysis was performed',
+    example: '2024-01-15T10:30:00Z',
+  })
+  analyzedAt: Date;
+
+  @ApiProperty({
+    description: 'Hash of the content that was analyzed',
+    example: 'abc123def456',
+  })
+  contentHash: string;
+
+  @ApiProperty({
+    description: 'Whether the content was AI-generated',
+    example: true,
+    required: false,
+  })
+  wasAiGenerated?: boolean;
+}
+
 // New DTOs for Parallel SEO Analysis Workers
 
 // Input DTOs for each worker
@@ -242,6 +328,22 @@ export class ProductAnalysisInputDto {
   })
   @IsString()
   productDescription: string;
+
+  @ApiProperty({
+    description: 'Previous suggestions for this product',
+    type: [PreviousSuggestionDto],
+    required: false,
+  })
+  @IsOptional()
+  previousSuggestions?: PreviousSuggestionDto[];
+
+  @ApiProperty({
+    description: 'Analysis history for this product',
+    type: [AnalysisHistoryDto],
+    required: false,
+  })
+  @IsOptional()
+  analysisHistory?: AnalysisHistoryDto[];
 }
 
 export class ProductSeoAnalysisInputDto {

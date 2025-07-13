@@ -1,17 +1,30 @@
 export const TASK_PROMPTS = {
-  PRODUCT_CONTENT_ANALYSIS: `Analyze this product content:
+  PRODUCT_CONTENT_ANALYSIS: `Analyze this product content with brand awareness:
 
 Product ID: {productId}
 Title: "{productTitle}"
 Description: "{productDescription}"
 
-Rate each field 0-100 and provide suggestions with actual improved content.
+BRAND ANALYSIS REQUIREMENTS:
+- Ensure all suggestions align with the provided brand story and guidelines
+- Incorporate brand keys naturally into content recommendations
+- Maintain consistent brand tone and messaging throughout
+- If content already reflects good brand alignment, score it appropriately high
+- Prioritize brand consistency over generic SEO improvements
 
-Example response format:
-- overallScore: 75
+CONSISTENCY CHECK:
+- If analyzing previously AI-generated content that follows brand guidelines, maintain high scores
+- Only suggest changes if there are genuine SEO improvements or better brand alignment needed
+- Avoid suggesting changes just for the sake of change
+- Recognize content that successfully incorporates brand elements
+
+Rate each field 0-100 and provide suggestions with actual improved content that reflects the brand identity.
+
+Response format:
+- overallScore: number (0-100)
 - fieldScores: array with field, score, description
 - suggestions: array with type, priority, field, current, suggested, reason, impact
-- feedback: summary string`,
+- feedback: summary string emphasizing brand alignment`,
 
   SEO_METADATA_ANALYSIS: `Analyze this SEO metadata:
 
@@ -51,5 +64,5 @@ Required format:
 - overallScore: number 0-100
 - fieldScores: array with field, score, description
 - suggestions: array with type, priority, field, current, suggested, reason, impact
-- feedback: string summary`
+- feedback: string summary`,
 };

@@ -1,7 +1,18 @@
 export declare enum SuggestionType {
+    PRODUCT_TITLE = "product-title",
+    PRODUCT_DESCRIPTION = "product-description",
+    META_TITLE = "meta-title",
+    META_DESCRIPTION = "meta-description",
+    IMAGE_ALT_TEXT = "image-alt-text",
+    METAFIELD_TITLE = "metafield-title",
+    METAFIELD_DESCRIPTION = "metafield-description",
+    METAFIELD_KEYWORDS = "metafield-keywords",
+    STRUCTURED_DATA = "structured-data",
+    SCHEMA_MARKUP = "schema-markup",
     TITLE = "title",
     DESCRIPTION = "description",
-    META_DESCRIPTION = "meta-description",
+    SEO_TITLE = "seo-title",
+    SEO_DESCRIPTION = "seo-description",
     ALT_TEXT = "alt-text"
 }
 export declare enum SuggestionPriority {
@@ -14,7 +25,7 @@ export declare class ScanProductsDto {
 }
 export declare class SuggestionDto {
     id: string;
-    type: SuggestionType;
+    type: string;
     priority: SuggestionPriority;
     field: string;
     current: string;
@@ -53,10 +64,25 @@ export declare class ProductBulkSuggestionsDto {
 export declare class ApplyBulkSuggestionsNewDto {
     products: ProductBulkSuggestionsDto[];
 }
+export declare class PreviousSuggestionDto {
+    field: string;
+    suggestedContent: string;
+    generatedAt: Date;
+    appliedAt?: Date;
+    originalScore?: number;
+}
+export declare class AnalysisHistoryDto {
+    score: number;
+    analyzedAt: Date;
+    contentHash: string;
+    wasAiGenerated?: boolean;
+}
 export declare class ProductAnalysisInputDto {
     productId: string;
     productTitle: string;
     productDescription: string;
+    previousSuggestions?: PreviousSuggestionDto[];
+    analysisHistory?: AnalysisHistoryDto[];
 }
 export declare class ProductSeoAnalysisInputDto {
     productId: string;
