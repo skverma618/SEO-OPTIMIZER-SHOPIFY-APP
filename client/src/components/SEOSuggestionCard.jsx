@@ -7,35 +7,103 @@ import {
   Badge,
   Button,
   Checkbox,
-  Icon,
-  Collapsible,
   TextField,
   ButtonGroup,
 } from '@shopify/polaris';
 import {
   CheckIcon,
-  AlertTriangleIcon,
   EditIcon,
-  ImageIcon,
-  SearchIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
 } from '@shopify/polaris-icons';
 
-function SEOSuggestionCard({ 
+// Score indicator component with circular ring
+function ScoreIndicator({ score }) {
+  console.log(score, "SCORE!!")
+  const getScoreColor = (score) => {
+    if (score <= 40) return { color: '#dc2626', textColor: '#dc2626' }; // Red
+    if (score <= 80) return { color: '#d97706', textColor: '#d97706' }; // Yellow/Orange
+    return { color: '#16a34a', textColor: '#16a34a' }; // Green
+  };
+
+  const { color, textColor } = getScoreColor(score);
+  const circumference = 2 * Math.PI * 16; // radius = 16
+  const strokeDasharray = circumference;
+  const strokeDashoffset = circumference - (score / 100) * circumference;
+
+  return (
+    <div style={{
+      position: 'relative',
+      width: '48px',
+      height: '48px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      {/* Background circle */}
+      <svg
+        width="48"
+        height="48"
+        style={{ position: 'absolute', transform: 'rotate(-90deg)' }}
+      >
+        <circle
+          cx="24"
+          cy="24"
+          r="16"
+          fill="none"
+          stroke="#e5e7eb"
+          strokeWidth="3"
+        />
+        <circle
+          cx="24"
+          cy="24"
+          r="16"
+          fill="none"
+          stroke={color}
+          strokeWidth="3"
+          strokeDasharray={strokeDasharray}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          style={{
+            transition: 'stroke-dashoffset 0.5s ease-in-out'
+          }}
+        />
+      </svg>
+      
+      {/* Score text */}
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '50%',
+        width: '32px',
+        height: '32px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: `2px solid ${color}`,
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+      }}>
+        <span style={{
+          fontSize: '12px',
+          fontWeight: 'bold',
+          color: textColor,
+          lineHeight: '1'
+        }}>
+          {score}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function SEOSuggestionCard({
   suggestion, 
   isSelected, 
   isApplied, 
   onSelect, 
   onApply 
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedValue, setEditedValue] = useState(suggestion.suggested);
 
-  const handleToggleExpanded = useCallback(() => {
-    setIsExpanded(prev => !prev);
-  }, []);
+  console.log(suggestion, "SUGGESTION!!")
 
   const handleStartEditing = useCallback(() => {
     setIsEditing(true);
@@ -63,15 +131,6 @@ function SEOSuggestionCard({
     return <Badge {...badgeProps[priority]} />;
   };
 
-  const getTypeIcon = (type) => {
-    const icons = {
-      title: SearchIcon,
-      description: EditIcon,
-      'meta-description': EditIcon,
-      'alt-text': ImageIcon,
-    };
-    return icons[type] || EditIcon;
-  };
 
   const getTypeLabel = (type) => {
     const labels = {
@@ -99,7 +158,7 @@ function SEOSuggestionCard({
               
               <BlockStack gap="100">
                 <InlineStack gap="200" align="start">
-                  <Icon source={getTypeIcon(suggestion.type)} color="base" />
+                  {/* <Icon source={getTypeIcon(suggestion.type)} color="base" /> */}
                   <Text variant="bodyMd" fontWeight="semibold">
                     {getTypeLabel(suggestion.type)}
                   </Text>
@@ -117,15 +176,15 @@ function SEOSuggestionCard({
               </BlockStack>
             </InlineStack>
 
-            <ButtonGroup>
-              <Button
-                size="slim"
-                onClick={handleToggleExpanded}
-                icon={isExpanded ? ChevronUpIcon : ChevronDownIcon}
-              >
-                {isExpanded ? 'Less' : 'Details'}
-              </Button>
-              
+            <InlineStack gap="300" align="center">
+              {/* Score indicator */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                <ScoreIndicator score={suggestion.score} />
+                {/* <Text variant="captionMd" color="subdued">
+                  SEO Score
+                </Text> */}
+              </div>
+
               {!isApplied && (
                 <Button
                   size="slim"
@@ -136,124 +195,61 @@ function SEOSuggestionCard({
                   Apply
                 </Button>
               )}
-            </ButtonGroup>
+            </InlineStack>
           </InlineStack>
 
-          {/* Quick preview of the suggestion */}
+          {/* New structure as requested */}
           <BlockStack gap="200">
-            <Text variant="bodySm" color="subdued">
-              {suggestion.reason}
-            </Text>
-            
-            {suggestion.current && (
-              <div>
-                <Text variant="bodySm" fontWeight="medium" color="subdued">
-                  Current:
-                </Text>
-                <Text variant="bodySm" color="subdued">
-                  "{suggestion.current}"
-                </Text>
-              </div>
-            )}
-            
+            {/* Suggestion with highlighted reason */}
             <div>
-              <Text variant="bodySm" fontWeight="medium" color="success">
-                Suggested:
-              </Text>
-              <Text variant="bodySm">
-                "{suggestion.suggested}"
+              <Text variant="bodySm" fontWeight="medium">
+                Suggestion: <span style={{ backgroundColor: '#fef3c7', padding: '2px 4px', borderRadius: '3px' }}>{suggestion.reason}</span>
               </Text>
             </div>
-          </BlockStack>
-
-          {/* Expandable details section */}
-          <Collapsible
-            open={isExpanded}
-            id={`suggestion-details-${suggestion.id}`}
-            transition={{ duration: '200ms', timingFunction: 'ease-in-out' }}
-          >
-            <BlockStack gap="400">
-              <Card background="bg-surface-secondary">
-                <div style={{ padding: '16px' }}>
-                  <BlockStack gap="300">
-                    <Text variant="headingSm">Impact & Benefits</Text>
-                    <Text variant="bodySm">
-                      {suggestion.impact}
-                    </Text>
-                  </BlockStack>
-                </div>
-              </Card>
-
-              {/* Editable suggestion */}
-              <BlockStack gap="300">
-                <InlineStack gap="200" align="space-between">
-                  <Text variant="headingSm">Customize Suggestion</Text>
-                  {!isEditing ? (
-                    <Button size="slim" onClick={handleStartEditing}>
-                      <Icon source={EditIcon} />
-                      Edit
-                    </Button>
-                  ) : (
-                    <ButtonGroup>
-                      <Button size="slim" onClick={handleCancelEditing}>
-                        Cancel
-                      </Button>
-                      <Button size="slim" primary onClick={handleSaveEdit}>
-                        Save
-                      </Button>
-                    </ButtonGroup>
-                  )}
-                </InlineStack>
-
+            
+            {/* Impact with highlighted text */}
+            <div>
+              <Text variant="bodySm" fontWeight="medium">
+                Impact: <span style={{ backgroundColor: '#dcfce7', padding: '2px 4px', borderRadius: '3px' }}>{suggestion.impact}</span>
+              </Text>
+            </div>
+            
+            {/* Suggested value with edit icon */}
+            <InlineStack gap="200" align="space-between">
+              <div style={{ flex: 1 }}>
+                <Text variant="bodySm" fontWeight="medium" color="success">
+                  Suggested:
+                </Text>
                 {isEditing ? (
                   <TextField
                     value={editedValue}
                     onChange={setEditedValue}
                     multiline={suggestion.type === 'description' || suggestion.type === 'meta-description'}
                     autoComplete="off"
-                    helpText="Customize this suggestion to better fit your brand voice and strategy"
                   />
                 ) : (
-                  <Card background="bg-surface-secondary">
-                    <div style={{ padding: '16px' }}>
-                      <Text variant="bodySm">
-                        {editedValue}
-                      </Text>
-                    </div>
-                  </Card>
+                  <Text variant="bodySm">
+                    "{editedValue}"
+                  </Text>
                 )}
-              </BlockStack>
-
-              {/* Before/After comparison for visual types */}
-              {suggestion.type === 'title' && (
-                <BlockStack gap="300">
-                  <Text variant="headingSm">Preview</Text>
-                  <Card background="bg-surface-secondary">
-                    <div style={{ padding: '16px' }}>
-                      <BlockStack gap="200">
-                        <div>
-                          <Text variant="bodySm" fontWeight="medium" color="subdued">
-                            Before:
-                          </Text>
-                          <Text variant="bodyMd" color="subdued">
-                            {suggestion.current || 'No title set'}
-                          </Text>
-                        </div>
-                        <div>
-                          <Text variant="bodySm" fontWeight="medium" color="success">
-                            After:
-                          </Text>
-                          <Text variant="bodyMd" fontWeight="semibold">
-                            {editedValue}
-                          </Text>
-                        </div>
-                      </BlockStack>
-                    </div>
-                  </Card>
-                </BlockStack>
+              </div>
+              
+              {!isEditing ? (
+                <Button size="slim" onClick={handleStartEditing} icon={EditIcon}>
+                </Button>
+              ) : (
+                <ButtonGroup>
+                  <Button size="slim" onClick={handleCancelEditing}>
+                    Cancel
+                  </Button>
+                  <Button size="slim" primary onClick={handleSaveEdit}>
+                    Save
+                  </Button>
+                </ButtonGroup>
               )}
-            </BlockStack>
-          </Collapsible>
+            </InlineStack>
+          </BlockStack>
+
         </BlockStack>
       </div>
     </Card>

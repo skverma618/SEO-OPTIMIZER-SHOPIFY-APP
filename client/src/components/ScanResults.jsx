@@ -58,18 +58,21 @@ function ScanResults() {
         id: product.productId,
         title: product.title,
         handle: product.handle,
-        image: { url: 'https://picsum.photos/80/80?random=' + Math.random(), altText: product.title },
+        // image: product.image,
         suggestions: product.suggestions.map(suggestion => ({
           id: suggestion.id,
           type: suggestion.type,
           priority: suggestion.priority,
           field: suggestion.field,
           current: suggestion.current,
+          score: suggestion.score,
           suggested: suggestion.suggested,
           reason: suggestion.reason,
           impact: suggestion.impact,
         }))
       }));
+
+      console.log(transformedResults, "TRANSFORMED RESULTS!!")
       
       setResults(transformedResults);
       setIsLoading(false);
@@ -367,6 +370,7 @@ if (!SEOSuggestionCard) {
                     const allActiveSuggestionsSelected = activeSuggestionIds.length > 0 && activeSuggestionIds.every(id => selectedSuggestions.includes(id));
                     const hasActiveSuggestions = activeSuggestionIds.length > 0;
                     
+                    console.log(product, "product on line 373 in scanresults")
                     return [
                       <Checkbox
                         checked={allActiveSuggestionsSelected}
