@@ -125,6 +125,7 @@ let SeoController = SeoController_1 = class SeoController {
             if (!applyBulkDto.suggestions || applyBulkDto.suggestions.length === 0) {
                 throw new common_1.HttpException('Suggestions are required', common_1.HttpStatus.BAD_REQUEST);
             }
+            console.log("INSIDE APPLY BULK SUGGESTIONS CONTROLLER WITH SHOP AND DTO : ", shop, applyBulkDto);
             const result = await this.seoService.applyBulkSuggestions(shop, applyBulkDto.suggestions);
             return {
                 success: true,
@@ -134,6 +135,33 @@ let SeoController = SeoController_1 = class SeoController {
         }
         catch (error) {
             this.logger.error('Error applying bulk suggestions', error);
+            throw new common_1.HttpException('Failed to apply suggestions', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async applyBulkSuggestionsNew(applyBulkDto, shop) {
+        try {
+            if (!shop) {
+                throw new common_1.HttpException('Shop parameter is required', common_1.HttpStatus.BAD_REQUEST);
+            }
+            if (!applyBulkDto.products || applyBulkDto.products.length === 0) {
+                throw new common_1.HttpException('Products are required', common_1.HttpStatus.BAD_REQUEST);
+            }
+            console.log("INSIDE NEW BULK APPLY CONTROLLER WITH SHOP AND DTO: ", shop, applyBulkDto);
+            const allSuggestions = applyBulkDto.products.flatMap(product => product.suggestions.map(suggestion => ({
+                ...suggestion,
+                productId: product.productId,
+            })));
+            const result = await this.seoService.applyBulkSuggestions(shop, allSuggestions);
+            const totalSuggestions = allSuggestions.length;
+            const totalProducts = applyBulkDto.products.length;
+            return {
+                success: true,
+                data: result,
+                message: `${totalSuggestions} suggestions applied successfully across ${totalProducts} products`,
+            };
+        }
+        catch (error) {
+            this.logger.error('Error applying bulk suggestions (new format)', error);
             throw new common_1.HttpException('Failed to apply suggestions', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -480,6 +508,50 @@ __decorate([
     __metadata("design:paramtypes", [seo_dto_1.ApplyBulkSuggestionsDto, String]),
     __metadata("design:returntype", Promise)
 ], SeoController.prototype, "applyBulkSuggestions", null);
+__decorate([
+    (0, common_1.Post)('apply/bulk-new'),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Apply multiple SEO suggestions grouped by product',
+        description: 'Applies multiple SEO improvement suggestions organized by product',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'shop',
+        description: 'Shopify shop domain',
+        example: 'my-shop.myshopify.com',
+    }),
+    (0, swagger_1.ApiBody)({
+        type: seo_dto_1.ApplyBulkSuggestionsNewDto,
+        description: 'Products with their selected suggestions',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Bulk suggestions applied successfully',
+        schema: {
+            type: 'object',
+            properties: {
+                success: { type: 'boolean', example: true },
+                data: { type: 'object' },
+                message: {
+                    type: 'string',
+                    example: 'X suggestions applied successfully across Y products',
+                },
+            },
+        },
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 400,
+        description: 'Bad request - Shop parameter or products are required',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 500,
+        description: 'Internal server error',
+    }),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Query)('shop')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [seo_dto_1.ApplyBulkSuggestionsNewDto, String]),
+    __metadata("design:returntype", Promise)
+], SeoController.prototype, "applyBulkSuggestionsNew", null);
 __decorate([
     (0, common_1.Post)('analyze/parallel'),
     (0, swagger_1.ApiOperation)({

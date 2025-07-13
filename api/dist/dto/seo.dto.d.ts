@@ -43,6 +43,15 @@ export declare class ApplySuggestionDto {
 export declare class ApplyBulkSuggestionsDto {
     suggestions: ApplySuggestionDto[];
 }
+export declare class ProductBulkSuggestionsDto {
+    productId: string;
+    title: string;
+    handle: string;
+    suggestions: ApplySuggestionDto[];
+}
+export declare class ApplyBulkSuggestionsNewDto {
+    products: ProductBulkSuggestionsDto[];
+}
 export declare class ProductAnalysisInputDto {
     productId: string;
     productTitle: string;

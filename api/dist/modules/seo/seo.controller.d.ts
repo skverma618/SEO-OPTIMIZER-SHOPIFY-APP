@@ -1,5 +1,5 @@
 import { SeoService } from './seo.service';
-import { ScanProductsDto, ApplySuggestionDto, ApplyBulkSuggestionsDto, ParallelAnalysisInputDto, ParallelAnalysisResultDto } from '../../dto/seo.dto';
+import { ScanProductsDto, ApplySuggestionDto, ApplyBulkSuggestionsDto, ApplyBulkSuggestionsNewDto, ParallelAnalysisInputDto, ParallelAnalysisResultDto } from '../../dto/seo.dto';
 import { ApiResponseDto } from '../../dto/common.dto';
 import { ParallelSeoAnalysisService } from './parallel-seo-analysis.service';
 import { ProductDataTransformerService } from './product-data-transformer.service';
@@ -19,6 +19,7 @@ export declare class SeoController {
     analyzeSEO(scanProductsDto: ScanProductsDto, shop: string): Promise<ApiResponseDto<any>>;
     applySuggestion(applySuggestionDto: ApplySuggestionDto, shop: string): Promise<ApiResponseDto<any>>;
     applyBulkSuggestions(applyBulkDto: ApplyBulkSuggestionsDto, shop: string): Promise<ApiResponseDto<any>>;
+    applyBulkSuggestionsNew(applyBulkDto: ApplyBulkSuggestionsNewDto, shop: string): Promise<ApiResponseDto<any>>;
     analyzeParallel(analysisInput: ParallelAnalysisInputDto, shop: string): Promise<ApiResponseDto<ParallelAnalysisResultDto>>;
     analyzeBatch(analysisInputs: ParallelAnalysisInputDto[], shop: string): Promise<ApiResponseDto<{
         results: ParallelAnalysisResultDto[];

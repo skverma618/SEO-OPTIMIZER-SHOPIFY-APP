@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ParallelAnalysisInputDto = exports.ParallelAnalysisResultDto = exports.AnalysisResultDto = exports.ProductMetaFieldAnalysisInputDto = exports.ProductImageAnalysisInputDto = exports.ProductSeoAnalysisInputDto = exports.ProductAnalysisInputDto = exports.ApplyBulkSuggestionsDto = exports.ApplySuggestionDto = exports.ScanResultDto = exports.ProductScanResultDto = exports.SuggestionDto = exports.ScanProductsDto = exports.SuggestionPriority = exports.SuggestionType = void 0;
+exports.ParallelAnalysisInputDto = exports.ParallelAnalysisResultDto = exports.AnalysisResultDto = exports.ProductMetaFieldAnalysisInputDto = exports.ProductImageAnalysisInputDto = exports.ProductSeoAnalysisInputDto = exports.ProductAnalysisInputDto = exports.ApplyBulkSuggestionsNewDto = exports.ProductBulkSuggestionsDto = exports.ApplyBulkSuggestionsDto = exports.ApplySuggestionDto = exports.ScanResultDto = exports.ProductScanResultDto = exports.SuggestionDto = exports.ScanProductsDto = exports.SuggestionPriority = exports.SuggestionType = void 0;
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
 var SuggestionType;
@@ -233,6 +233,57 @@ __decorate([
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
 ], ApplyBulkSuggestionsDto.prototype, "suggestions", void 0);
+class ProductBulkSuggestionsDto {
+    productId;
+    title;
+    handle;
+    suggestions;
+}
+exports.ProductBulkSuggestionsDto = ProductBulkSuggestionsDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Shopify product ID',
+        example: 'gid://shopify/Product/123456789',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductBulkSuggestionsDto.prototype, "productId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product title',
+        example: 'Premium Quality T-Shirt',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductBulkSuggestionsDto.prototype, "title", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product handle/slug',
+        example: 'premium-quality-t-shirt',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductBulkSuggestionsDto.prototype, "handle", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Array of selected suggestions for this product',
+        type: [ApplySuggestionDto],
+    }),
+    (0, class_validator_1.IsArray)(),
+    __metadata("design:type", Array)
+], ProductBulkSuggestionsDto.prototype, "suggestions", void 0);
+class ApplyBulkSuggestionsNewDto {
+    products;
+}
+exports.ApplyBulkSuggestionsNewDto = ApplyBulkSuggestionsNewDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Array of products with their selected suggestions',
+        type: [ProductBulkSuggestionsDto],
+    }),
+    (0, class_validator_1.IsArray)(),
+    __metadata("design:type", Array)
+], ApplyBulkSuggestionsNewDto.prototype, "products", void 0);
 class ProductAnalysisInputDto {
     productId;
     productTitle;

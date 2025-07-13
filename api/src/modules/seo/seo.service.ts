@@ -126,6 +126,7 @@ export class SeoService {
       // Apply suggestions one by one (could be optimized with batch operations)
       for (const suggestion of suggestions) {
         try {
+          console.log("TRYING TO UPDATE THE SUGGESTION: ", suggestion)
           const result = await this.applySuggestionToShopify(
             shopDomain,
             shop.accessToken,
@@ -250,29 +251,152 @@ export class SeoService {
     accessToken: string,
     suggestion: ApplySuggestionDto,
   ) {
-    // TODO: Implement actual Shopify API calls based on suggestion type
-    switch (suggestion.field) {
-      case 'seo.title':
-      case 'seo.description':
-        return await this.shopifyService.updateProduct(
-          shopDomain,
-          accessToken,
-          suggestion.productId,
-          {
-            seo: {
-              [suggestion.field.split('.')[1]]: suggestion.value,
+    try {
+      this.logger.log(`Applying suggestion for field: ${suggestion.field}, productId: ${suggestion.productId}`);
+
+      // First, fetch the current product to get full context
+      const currentProductResult = await this.shopifyService.fetchProductById(
+        shopDomain,
+        accessToken,
+        suggestion.productId,
+      );
+
+      if (currentProductResult.errors || !currentProductResult.data?.product) {
+        throw new Error(`Failed to fetch current product: ${JSON.stringify(currentProductResult.errors)}`);
+      }
+
+      const currentProduct = currentProductResult.data.product;
+
+      switch (suggestion.field) {
+        case 'SEO Title':
+        case 'seo.title':
+        case 'Title Tag':
+          this.logger.log(`Updating SEO title for product ${suggestion.productId} with value: ${suggestion.value}`);
+          const seoTitleResult = await this.shopifyService.updateProduct(
+            shopDomain,
+            accessToken,
+            suggestion.productId,
+            {
+              seo: {
+                title: suggestion.value,
+                description: currentProduct.seo?.description || '',
+              },
             },
-          },
-        );
+          );
+          this.logger.log(`SEO title update result:`, JSON.stringify(seoTitleResult, null, 2));
+          return seoTitleResult;
 
-      case 'images.altText':
-        // TODO: Implement image alt text update
-        // This would require the image ID and use updateProductImage
-        return { success: true, message: 'Alt text update not implemented yet' };
+        case 'SEO Description':
+        case 'seo.description':
+          return await this.shopifyService.updateProduct(
+            shopDomain,
+            accessToken,
+            suggestion.productId,
+            {
+              seo: {
+                title: currentProduct.seo?.title || '',
+                description: suggestion.value,
+              },
+            },
+          );
 
-      default:
-        throw new Error(`Unsupported suggestion field: ${suggestion.field}`);
+        case 'Title':
+        case 'Product Title':
+          this.logger.log(`Updating product title for product ${suggestion.productId} with value: ${suggestion.value}`);
+          return await this.shopifyService.updateProduct(
+            shopDomain,
+            accessToken,
+            suggestion.productId,
+            {
+              title: suggestion.value,
+            },
+          );
+
+        case 'Description':
+          console.log("INSIDE SWITCH CASE DESCRIPTION : ", suggestion)
+          console.log("OTHER INFO : ", accessToken, shopDomain )
+          return await this.shopifyService.updateProduct(
+            shopDomain,
+            accessToken,
+            suggestion.productId,
+            {
+              descriptionHtml: suggestion.value,
+            },
+          );
+
+        case 'images.altText':
+          // Extract image ID from suggestion ID
+          const imageId = this.extractImageIdFromSuggestion(suggestion);
+          if (!imageId) {
+            throw new Error(`Image ID not found in suggestion ID: ${suggestion.suggestionId}. Alt text updates require image ID.`);
+          }
+          return await this.shopifyService.updateProductImage(
+            shopDomain,
+            accessToken,
+            imageId,
+            suggestion.value,
+          );
+
+        case 'Meta Description':
+          return await this.shopifyService.updateProductMetafield(
+            shopDomain,
+            accessToken,
+            suggestion.productId,
+            'seo',
+            'meta_description',
+            suggestion.value,
+            'single_line_text_field',
+          );
+
+
+        case 'Structured Data':
+          return await this.shopifyService.updateProductMetafield(
+            shopDomain,
+            accessToken,
+            suggestion.productId,
+            'seo',
+            'structured_data',
+            suggestion.value,
+            'json',
+          );
+
+        case 'Product Details':
+          return await this.shopifyService.updateProductMetafield(
+            shopDomain,
+            accessToken,
+            suggestion.productId,
+            'seo',
+            'product_details',
+            suggestion.value,
+            'multi_line_text_field',
+          );
+
+        default:
+          throw new Error(`Unsupported suggestion field: ${suggestion.field}`);
+      }
+    } catch (error) {
+      this.logger.error(`Error applying suggestion for field ${suggestion.field}:`, error);
+      throw error;
     }
+  }
+
+  private extractImageIdFromSuggestion(suggestion: ApplySuggestionDto): string | null {
+    // Extract image ID from suggestion ID patterns like:
+    // "alt-text-gid://shopify/ProductImage/50092349489436"
+    
+    if (suggestion.suggestionId.includes('gid://shopify/ProductImage/')) {
+      const match = suggestion.suggestionId.match(/gid:\/\/shopify\/ProductImage\/(\d+)/);
+      return match ? `gid://shopify/ProductImage/${match[1]}` : null;
+    }
+    
+    // For suggestions like "alt-text-1", "alt-text-2", we need additional context
+    // This would require the image index or additional data in the suggestion
+    if (suggestion.suggestionId.match(/^alt-text-\d+$/)) {
+      this.logger.warn(`Cannot extract image ID from suggestion ID: ${suggestion.suggestionId}. Consider including image ID in suggestion ID.`);
+      return null;
+    }
+    
+    return null;
   }
 
   private async saveScanHistory(shopDomain: string, scanType: string, results: any) {

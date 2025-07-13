@@ -147,39 +147,58 @@ let ShopifyService = ShopifyService_1 = class ShopifyService {
     }
     async updateProduct(shopDomain, accessToken, productId, updates) {
         const client = this.createGraphQLClient(shopDomain, accessToken);
+        console.log("=== Shopify Product Update: Start ===");
+        console.log("Shop Domain:", shopDomain);
+        console.log("Product ID:", productId);
+        console.log("Update Payload:", updates);
         const graphqlMutation = `
-      mutation productUpdate($input: ProductInput!) {
-        productUpdate(input: $input) {
-          product {
-            id
+    mutation productUpdate($input: ProductInput!) {
+      productUpdate(input: $input) {
+        product {
+          id
+          title
+          descriptionHtml
+          seo {
             title
-            seo {
-              title
-              description
-            }
+            description
           }
-          userErrors {
-            field
-            message
-          }
+        }
+        userErrors {
+          field
+          message
         }
       }
-    `;
+    }
+  `;
         try {
+            console.log("Sending GraphQL mutation to Shopify...");
+            const input = this.buildProductUpdateInput(productId, updates);
+            console.log("INPUT SENT TO SHOPIFY API : ", input);
             const response = await client.post('', {
                 query: graphqlMutation,
-                variables: {
-                    input: {
-                        id: productId,
-                        ...updates,
-                    },
-                },
+                variables: { input },
             });
-            return response.data;
+            console.log("Raw response from Shopify:", JSON.stringify(response.data, null, 2));
+            const result = response.data.data.productUpdate;
+            if (result.userErrors && result.userErrors.length > 0) {
+                console.warn("Shopify returned userErrors:", result.userErrors);
+                return {
+                    success: false,
+                    errors: result.userErrors,
+                };
+            }
+            console.log("Product updated successfully:", result.product);
+            return {
+                success: true,
+                product: result.product,
+            };
         }
         catch (error) {
-            this.logger.error('Error updating product in Shopify', error);
+            console.error('Error updating product in Shopify:', error);
             throw error;
+        }
+        finally {
+            console.log("=== Shopify Product Update: End ===");
         }
     }
     async updateProductImage(shopDomain, accessToken, imageId, altText) {
@@ -215,8 +234,68 @@ let ShopifyService = ShopifyService_1 = class ShopifyService {
             throw error;
         }
     }
+    async updateProductMetafield(shopDomain, accessToken, productId, namespace, key, value, type = 'single_line_text_field') {
+        const client = this.createGraphQLClient(shopDomain, accessToken);
+        const graphqlMutation = `
+      mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+        metafieldsSet(metafields: $metafields) {
+          metafields {
+            id
+            namespace
+            key
+            value
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+    `;
+        try {
+            const response = await client.post('', {
+                query: graphqlMutation,
+                variables: {
+                    metafields: [
+                        {
+                            ownerId: productId,
+                            namespace,
+                            key,
+                            value,
+                            type,
+                        },
+                    ],
+                },
+            });
+            return response.data;
+        }
+        catch (error) {
+            this.logger.error('Error updating product metafield in Shopify', error);
+            throw error;
+        }
+    }
     async verifyWebhook(data, hmacHeader) {
         return true;
+    }
+    buildProductUpdateInput(productId, updates, currentProduct) {
+        const input = { id: productId };
+        if (updates.title !== undefined) {
+            input.title = updates.title;
+        }
+        if (updates.descriptionHtml !== undefined) {
+            input.descriptionHtml = updates.descriptionHtml;
+        }
+        if (updates.seo) {
+            input.seo = {
+                title: updates.seo.title !== undefined
+                    ? updates.seo.title
+                    : currentProduct?.seo?.title || '',
+                description: updates.seo.description !== undefined
+                    ? updates.seo.description
+                    : currentProduct?.seo?.description || ''
+            };
+        }
+        return input;
     }
 };
 exports.ShopifyService = ShopifyService;

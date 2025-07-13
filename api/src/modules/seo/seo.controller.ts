@@ -21,6 +21,7 @@ import {
   ScanProductsDto,
   ApplySuggestionDto,
   ApplyBulkSuggestionsDto,
+  ApplyBulkSuggestionsNewDto,
   ParallelAnalysisInputDto,
   ParallelAnalysisResultDto,
 } from '../../dto/seo.dto';
@@ -387,6 +388,7 @@ export class SeoController {
         );
       }
 
+      console.log("INSIDE APPLY BULK SUGGESTIONS CONTROLLER WITH SHOP AND DTO : ", shop, applyBulkDto)
       const result = await this.seoService.applyBulkSuggestions(
         shop,
         applyBulkDto.suggestions,
@@ -399,6 +401,94 @@ export class SeoController {
       };
     } catch (error) {
       this.logger.error('Error applying bulk suggestions', error);
+      throw new HttpException(
+        'Failed to apply suggestions',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('apply/bulk-new')
+  @ApiOperation({
+    summary: 'Apply multiple SEO suggestions grouped by product',
+    description: 'Applies multiple SEO improvement suggestions organized by product',
+  })
+  @ApiQuery({
+    name: 'shop',
+    description: 'Shopify shop domain',
+    example: 'my-shop.myshopify.com',
+  })
+  @ApiBody({
+    type: ApplyBulkSuggestionsNewDto,
+    description: 'Products with their selected suggestions',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Bulk suggestions applied successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        data: { type: 'object' },
+        message: {
+          type: 'string',
+          example: 'X suggestions applied successfully across Y products',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - Shop parameter or products are required',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
+  async applyBulkSuggestionsNew(
+    @Body() applyBulkDto: ApplyBulkSuggestionsNewDto,
+    @Query('shop') shop: string,
+  ): Promise<ApiResponseDto<any>> {
+    try {
+      if (!shop) {
+        throw new HttpException(
+          'Shop parameter is required',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      if (!applyBulkDto.products || applyBulkDto.products.length === 0) {
+        throw new HttpException(
+          'Products are required',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      console.log("INSIDE NEW BULK APPLY CONTROLLER WITH SHOP AND DTO: ", shop, applyBulkDto);
+      
+      // Flatten the product-grouped suggestions into the old format for the service
+      const allSuggestions = applyBulkDto.products.flatMap(product =>
+        product.suggestions.map(suggestion => ({
+          ...suggestion,
+          productId: product.productId,
+        }))
+      );
+
+      const result = await this.seoService.applyBulkSuggestions(
+        shop,
+        allSuggestions,
+      );
+
+      const totalSuggestions = allSuggestions.length;
+      const totalProducts = applyBulkDto.products.length;
+
+      return {
+        success: true,
+        data: result,
+        message: `${totalSuggestions} suggestions applied successfully across ${totalProducts} products`,
+      };
+    } catch (error) {
+      this.logger.error('Error applying bulk suggestions (new format)', error);
       throw new HttpException(
         'Failed to apply suggestions',
         HttpStatus.INTERNAL_SERVER_ERROR,

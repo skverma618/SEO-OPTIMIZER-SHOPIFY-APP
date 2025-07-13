@@ -58,6 +58,7 @@ export declare class SeoService {
     private analyzeProductsForSEO;
     private generateMockSuggestions;
     private applySuggestionToShopify;
+    private extractImageIdFromSuggestion;
     private saveScanHistory;
     private generateScanId;
 }

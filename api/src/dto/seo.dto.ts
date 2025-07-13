@@ -172,6 +172,45 @@ export class ApplyBulkSuggestionsDto {
   suggestions: ApplySuggestionDto[];
 }
 
+export class ProductBulkSuggestionsDto {
+  @ApiProperty({
+    description: 'Shopify product ID',
+    example: 'gid://shopify/Product/123456789',
+  })
+  @IsString()
+  productId: string;
+
+  @ApiProperty({
+    description: 'Product title',
+    example: 'Premium Quality T-Shirt',
+  })
+  @IsString()
+  title: string;
+
+  @ApiProperty({
+    description: 'Product handle/slug',
+    example: 'premium-quality-t-shirt',
+  })
+  @IsString()
+  handle: string;
+
+  @ApiProperty({
+    description: 'Array of selected suggestions for this product',
+    type: [ApplySuggestionDto],
+  })
+  @IsArray()
+  suggestions: ApplySuggestionDto[];
+}
+
+export class ApplyBulkSuggestionsNewDto {
+  @ApiProperty({
+    description: 'Array of products with their selected suggestions',
+    type: [ProductBulkSuggestionsDto],
+  })
+  @IsArray()
+  products: ProductBulkSuggestionsDto[];
+}
+
 // New DTOs for Parallel SEO Analysis Workers
 
 // Input DTOs for each worker

@@ -78,6 +78,15 @@ class ApiService {
     });
   }
 
+  async applySEONew(shop, products) {
+    return this.request(`/api/seo/apply/bulk-new?shop=${encodeURIComponent(shop)}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        products,
+      }),
+    });
+  }
+
   async getScanHistory(shop, { page = 1, limit = 10 } = {}) {
     const params = new URLSearchParams({
       shop,
