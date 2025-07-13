@@ -1,4 +1,4 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum SuggestionType {
@@ -79,6 +79,13 @@ export class SuggestionDto {
     required: false,
   })
   impact?: string;
+
+  @ApiProperty({
+    description: 'Image URL for image-related suggestions',
+    example: 'https://cdn.shopify.com/s/files/1/0123/4567/products/product-image.jpg',
+    required: false,
+  })
+  imageUrl?: string;
 }
 
 export class ProductScanResultDto {
@@ -237,6 +244,15 @@ export class ProductImageAnalysisInputDto {
   productImageId: string;
 
   @ApiProperty({
+    description: 'Product image URL',
+    example: 'https://cdn.shopify.com/s/files/1/0123/4567/products/product-image.jpg',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  productImageUrl?: string;
+
+  @ApiProperty({
     description: 'Product image alt text',
     example: 'RYZE nicotine gum frosty mint flavor package',
   })
@@ -267,6 +283,29 @@ export class ProductMetaFieldAnalysisInputDto {
   productMetaValue: string;
 }
 
+// Field Score DTO for individual field scoring
+export class FieldScoreDto {
+  @ApiProperty({
+    description: 'Field name being scored',
+    example: 'Product Title',
+  })
+  field: string;
+
+  @ApiProperty({
+    description: 'Score for this specific field out of 100',
+    example: 85,
+    minimum: 0,
+    maximum: 100,
+  })
+  score: number;
+
+  @ApiProperty({
+    description: 'Description explaining the score for this field',
+    example: 'Title length is optimal and includes relevant keywords',
+  })
+  description: string;
+}
+
 // Analysis Result DTOs
 export class AnalysisResultDto {
   @ApiProperty({
@@ -294,6 +333,13 @@ export class AnalysisResultDto {
     example: 'The product title is well-optimized but could benefit from more specific keywords...',
   })
   feedback: string;
+
+  @ApiProperty({
+    description: 'Individual field scores breakdown',
+    type: [FieldScoreDto],
+    required: false,
+  })
+  fieldScores?: FieldScoreDto[];
 }
 
 export class ParallelAnalysisResultDto {
@@ -372,4 +418,10 @@ export class ParallelAnalysisInputDto {
     type: [ProductMetaFieldAnalysisInputDto],
   })
   metafields: ProductMetaFieldAnalysisInputDto[];
+
+  @ApiProperty({
+    description: 'Brand mapping information for brand-aware suggestions',
+    required: false,
+  })
+  brandMapping?: any;
 }

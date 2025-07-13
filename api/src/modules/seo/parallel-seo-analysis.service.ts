@@ -34,10 +34,10 @@ export class ParallelSeoAnalysisService {
         imageResult,
         metafieldsResult,
       ] = await Promise.allSettled([
-        this.productContentWorker.analyzeProductContent(input.productContent),
-        this.seoMetadataWorker.analyzeSeoMetadata(input.seoMetadata),
-        this.imageWorker.analyzeImageAltText(input.images),
-        this.metafieldsWorker.analyzeMetafields(input.metafields),
+        this.productContentWorker.analyzeProductContent(input.productContent, input.brandMapping),
+        this.seoMetadataWorker.analyzeSeoMetadata(input.seoMetadata, input.brandMapping),
+        this.imageWorker.analyzeImageAltText(input.images, input.brandMapping),
+        this.metafieldsWorker.analyzeMetafields(input.metafields, input.brandMapping),
       ]);
 
       // Extract results and handle any failures
@@ -107,7 +107,72 @@ export class ParallelSeoAnalysisService {
     imageAnalysis: AnalysisResultDto;
     metafieldsAnalysis: AnalysisResultDto;
   }): number {
-    // Weighted scoring system
+    // Collect all individual field scores from all analyses
+    const allFieldScores: number[] = [];
+
+    // Extract field scores from each analysis
+    if (analyses.productContentAnalysis.fieldScores) {
+      allFieldScores.push(...analyses.productContentAnalysis.fieldScores.map(f => f.score));
+    }
+    if (analyses.seoMetadataAnalysis.fieldScores) {
+      allFieldScores.push(...analyses.seoMetadataAnalysis.fieldScores.map(f => f.score));
+    }
+    if (analyses.imageAnalysis.fieldScores) {
+      allFieldScores.push(...analyses.imageAnalysis.fieldScores.map(f => f.score));
+    }
+    if (analyses.metafieldsAnalysis.fieldScores) {
+      allFieldScores.push(...analyses.metafieldsAnalysis.fieldScores.map(f => f.score));
+    }
+
+    // If we have individual field scores, calculate weighted average based on field importance
+    if (allFieldScores.length > 0) {
+      // Define field weights based on SEO importance
+      const fieldWeights = {
+        'Product Title': 0.15,
+        'Product Description': 0.10,
+        'SEO Title': 0.20,
+        'Meta Description': 0.15,
+        'Image 1 Alt Text': 0.08,
+        'Image 2 Alt Text': 0.05,
+        'Image 3 Alt Text': 0.03,
+        'Overall Image Quality': 0.09,
+        'SEO Metafields': 0.08,
+        'Structured Data': 0.04,
+        'Schema Markup': 0.03,
+      };
+
+      let weightedSum = 0;
+      let totalWeight = 0;
+
+      // Calculate weighted score based on field names
+      analyses.productContentAnalysis.fieldScores?.forEach(field => {
+        const weight = fieldWeights[field.field] || 0.05; // Default weight for unknown fields
+        weightedSum += field.score * weight;
+        totalWeight += weight;
+      });
+
+      analyses.seoMetadataAnalysis.fieldScores?.forEach(field => {
+        const weight = fieldWeights[field.field] || 0.05;
+        weightedSum += field.score * weight;
+        totalWeight += weight;
+      });
+
+      analyses.imageAnalysis.fieldScores?.forEach(field => {
+        const weight = fieldWeights[field.field] || 0.02; // Lower weight for additional images
+        weightedSum += field.score * weight;
+        totalWeight += weight;
+      });
+
+      analyses.metafieldsAnalysis.fieldScores?.forEach(field => {
+        const weight = fieldWeights[field.field] || 0.03;
+        weightedSum += field.score * weight;
+        totalWeight += weight;
+      });
+
+      return Math.round(weightedSum / totalWeight);
+    }
+
+    // Fallback to original weighted scoring system if no field scores available
     const weights = {
       productContent: 0.3,    // 30% - Product title and description are crucial
       seoMetadata: 0.35,      // 35% - SEO title and meta description are most important
@@ -115,7 +180,7 @@ export class ParallelSeoAnalysisService {
       metafields: 0.15,       // 15% - Additional SEO enhancements
     };
 
-    const weightedScore = 
+    const weightedScore =
       (analyses.productContentAnalysis.score * weights.productContent) +
       (analyses.seoMetadataAnalysis.score * weights.seoMetadata) +
       (analyses.imageAnalysis.score * weights.images) +

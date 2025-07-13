@@ -1,3 +1,5 @@
+import { BrandMapping, DEFAULT_BRAND_MAPPING } from '../../../interfaces/brand.interface';
+
 export const SYSTEM_PROMPTS = {
   SEO_EXPERT: `You are an expert SEO analyst with deep knowledge of e-commerce optimization, search engine algorithms, and conversion optimization. You specialize in analyzing Shopify products for SEO performance and providing actionable recommendations.
 
@@ -69,3 +71,13 @@ Your expertise covers:
 - Local business markup
 - E-commerce specific schemas`
 };
+
+export function createBrandAwareSystemPrompt(basePrompt: string, brandMapping?: BrandMapping): string {
+  if (!brandMapping) {
+    return basePrompt;
+  }
+  
+  const simpleBrandContext = `Brand: ${brandMapping.brandName}. Tone: ${brandMapping.brandTone}.`;
+
+  return `${basePrompt}\n\n${simpleBrandContext}`;
+}
