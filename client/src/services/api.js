@@ -96,6 +96,18 @@ class ApiService {
 
     return this.request(`/api/seo/history?${params}`);
   }
+
+  // Brand Story methods
+  async getBrandStory(shop) {
+    return this.request(`/api/auth/brand-story?shop=${encodeURIComponent(shop)}`);
+  }
+
+  async saveBrandStory(shop, brandStoryData) {
+    return this.request(`/api/auth/brand-story?shop=${encodeURIComponent(shop)}`, {
+      method: 'POST',
+      body: JSON.stringify(brandStoryData),
+    });
+  }
 }
 
 export default new ApiService();

@@ -17,6 +17,7 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const auth_service_1 = require("./auth.service");
+const brand_dto_1 = require("../../dto/brand.dto");
 let AuthController = AuthController_1 = class AuthController {
     authService;
     logger = new common_1.Logger(AuthController_1.name);
@@ -82,6 +83,40 @@ let AuthController = AuthController_1 = class AuthController {
         catch (error) {
             this.logger.error('Error verifying shop session', error);
             throw new common_1.HttpException('Failed to verify session', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async getBrandStory(shop) {
+        try {
+            if (!shop) {
+                throw new common_1.HttpException('Shop parameter is required', common_1.HttpStatus.BAD_REQUEST);
+            }
+            const brandStory = await this.authService.getBrandStory(shop);
+            return {
+                success: true,
+                data: brandStory,
+                message: 'Brand story retrieved successfully',
+            };
+        }
+        catch (error) {
+            this.logger.error('Error retrieving brand story', error);
+            throw new common_1.HttpException('Failed to retrieve brand story', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async saveBrandStory(shop, brandStoryDto) {
+        try {
+            if (!shop) {
+                throw new common_1.HttpException('Shop parameter is required', common_1.HttpStatus.BAD_REQUEST);
+            }
+            const result = await this.authService.saveBrandStory(shop, brandStoryDto);
+            return {
+                success: true,
+                data: result,
+                message: 'Brand story saved successfully',
+            };
+        }
+        catch (error) {
+            this.logger.error('Error saving brand story', error);
+            throw new common_1.HttpException('Failed to save brand story', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 };
@@ -220,6 +255,51 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verify", null);
+__decorate([
+    (0, common_1.Get)('brand-story'),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Get brand story',
+        description: 'Retrieves the brand story for a shop from brandMapping column',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'shop',
+        description: 'Shopify shop domain',
+        example: 'my-shop.myshopify.com',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Brand story retrieved successfully',
+    }),
+    __param(0, (0, common_1.Query)('shop')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "getBrandStory", null);
+__decorate([
+    (0, common_1.Post)('brand-story'),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Save brand story',
+        description: 'Saves the brand story to shop brandMapping column',
+    }),
+    (0, swagger_1.ApiQuery)({
+        name: 'shop',
+        description: 'Shopify shop domain',
+        example: 'my-shop.myshopify.com',
+    }),
+    (0, swagger_1.ApiBody)({
+        type: brand_dto_1.BrandStoryDto,
+        description: 'Brand story data',
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Brand story saved successfully',
+    }),
+    __param(0, (0, common_1.Query)('shop')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, brand_dto_1.BrandStoryDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "saveBrandStory", null);
 exports.AuthController = AuthController = AuthController_1 = __decorate([
     (0, swagger_1.ApiTags)('auth'),
     (0, common_1.Controller)('auth'),

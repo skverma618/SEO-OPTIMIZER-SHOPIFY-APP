@@ -3,14 +3,16 @@ import {
   Get,
   Post,
   Query,
+  Body,
   Redirect,
   HttpException,
   HttpStatus,
   Logger,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { ApiResponseDto } from '../../dto/common.dto';
+import { BrandStoryDto } from '../../dto/brand.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -229,6 +231,93 @@ export class AuthController {
       this.logger.error('Error verifying shop session', error);
       throw new HttpException(
         'Failed to verify session',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('brand-story')
+  @ApiOperation({
+    summary: 'Get brand story',
+    description: 'Retrieves the brand story for a shop from brandMapping column',
+  })
+  @ApiQuery({
+    name: 'shop',
+    description: 'Shopify shop domain',
+    example: 'my-shop.myshopify.com',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Brand story retrieved successfully',
+  })
+  async getBrandStory(
+    @Query('shop') shop: string,
+  ): Promise<ApiResponseDto<any>> {
+    try {
+      if (!shop) {
+        throw new HttpException(
+          'Shop parameter is required',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const brandStory = await this.authService.getBrandStory(shop);
+
+      return {
+        success: true,
+        data: brandStory,
+        message: 'Brand story retrieved successfully',
+      };
+    } catch (error) {
+      this.logger.error('Error retrieving brand story', error);
+      throw new HttpException(
+        'Failed to retrieve brand story',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('brand-story')
+  @ApiOperation({
+    summary: 'Save brand story',
+    description: 'Saves the brand story to shop brandMapping column',
+  })
+  @ApiQuery({
+    name: 'shop',
+    description: 'Shopify shop domain',
+    example: 'my-shop.myshopify.com',
+  })
+  @ApiBody({
+    type: BrandStoryDto,
+    description: 'Brand story data',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Brand story saved successfully',
+  })
+  async saveBrandStory(
+    @Query('shop') shop: string,
+    @Body() brandStoryDto: BrandStoryDto,
+  ): Promise<ApiResponseDto<any>> {
+    try {
+      if (!shop) {
+        throw new HttpException(
+          'Shop parameter is required',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const result = await this.authService.saveBrandStory(shop, brandStoryDto);
+
+      return {
+        success: true,
+        data: result,
+        message: 'Brand story saved successfully',
+      };
+    } catch (error) {
+      this.logger.error('Error saving brand story', error);
+      throw new HttpException(
+        'Failed to save brand story',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

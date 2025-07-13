@@ -136,6 +136,45 @@ let AuthService = AuthService_1 = class AuthService {
         return Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
     }
+    async getBrandStory(shop) {
+        try {
+            const shopEntity = await this.shopRepository.findOne({
+                where: { shopDomain: shop },
+            });
+            if (!shopEntity) {
+                throw new Error('Shop not found');
+            }
+            const brandMapping = shopEntity.brandMapping || {};
+            if (!brandMapping.brandName && shopEntity.shopName) {
+                brandMapping.brandName = shopEntity.shopName;
+            }
+            return brandMapping;
+        }
+        catch (error) {
+            this.logger.error('Error getting brand story', error);
+            throw error;
+        }
+    }
+    async saveBrandStory(shop, brandStoryDto) {
+        try {
+            const shopEntity = await this.shopRepository.findOne({
+                where: { shopDomain: shop },
+            });
+            if (!shopEntity) {
+                throw new Error('Shop not found');
+            }
+            shopEntity.brandMapping = {
+                ...shopEntity.brandMapping,
+                ...brandStoryDto,
+            };
+            await this.shopRepository.save(shopEntity);
+            return { success: true };
+        }
+        catch (error) {
+            this.logger.error('Error saving brand story', error);
+            throw error;
+        }
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = AuthService_1 = __decorate([

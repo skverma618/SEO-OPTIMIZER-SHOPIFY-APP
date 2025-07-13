@@ -19,6 +19,7 @@ let Shop = class Shop {
     shopName;
     planName;
     isActive;
+    brandMapping;
     installedAt;
     updatedAt;
 };
@@ -51,6 +52,10 @@ __decorate([
     (0, typeorm_1.Column)({ default: true }),
     __metadata("design:type", Boolean)
 ], Shop.prototype, "isActive", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'json', nullable: true }),
+    __metadata("design:type", Object)
+], Shop.prototype, "brandMapping", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

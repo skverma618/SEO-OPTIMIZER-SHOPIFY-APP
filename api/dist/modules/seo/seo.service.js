@@ -42,7 +42,7 @@ let SeoService = SeoService_1 = class SeoService {
                 throw new Error('Shop not found');
             }
             const allProducts = await this.fetchAllProducts(shopDomain, shop.accessToken);
-            const scanResults = await this.analyzeProductsForSEO(allProducts);
+            const scanResults = await this.analyzeProductsForSEO(allProducts, shopDomain);
             await this.saveScanHistory(shopDomain, 'store', scanResults);
             return {
                 scanId: this.generateScanId(),
@@ -65,7 +65,7 @@ let SeoService = SeoService_1 = class SeoService {
                 throw new Error('Shop not found');
             }
             const products = await this.fetchProductsByIds(shopDomain, shop.accessToken, productIds);
-            const scanResults = await this.analyzeProductsForSEO(products);
+            const scanResults = await this.analyzeProductsForSEO(products, shopDomain);
             await this.saveScanHistory(shopDomain, 'products', scanResults);
             return {
                 scanId: this.generateScanId(),
@@ -151,10 +151,10 @@ let SeoService = SeoService_1 = class SeoService {
         }
         return products;
     }
-    async analyzeProductsForSEO(products) {
+    async analyzeProductsForSEO(products, shopDomain) {
         try {
             this.logger.log(`Starting SEO analysis for ${products.length} products`);
-            const analysisResults = await this.simplifiedSeoAnalysisService.analyzeProductsSimplified(products);
+            const analysisResults = await this.simplifiedSeoAnalysisService.analyzeProductsSimplified(products, shopDomain);
             this.logger.log(`Completed SEO analysis for ${products.length} products`);
             return analysisResults;
         }
@@ -219,7 +219,6 @@ let SeoService = SeoService_1 = class SeoService {
             switch (suggestion.field) {
                 case 'SEO Title':
                 case 'seo.title':
-                case 'Title Tag':
                     this.logger.log(`Updating SEO title for product ${suggestion.productId} with value: ${suggestion.value}`);
                     const seoTitleResult = await this.shopifyService.updateProduct(shopDomain, accessToken, suggestion.productId, {
                         seo: {
@@ -238,12 +237,14 @@ let SeoService = SeoService_1 = class SeoService {
                         },
                     });
                 case 'Title':
+                case 'Title Tag':
                 case 'Product Title':
                     this.logger.log(`Updating product title for product ${suggestion.productId} with value: ${suggestion.value}`);
                     return await this.shopifyService.updateProduct(shopDomain, accessToken, suggestion.productId, {
                         title: suggestion.value,
                     });
                 case 'Description':
+                case 'description':
                     console.log("INSIDE SWITCH CASE DESCRIPTION : ", suggestion);
                     console.log("OTHER INFO : ", accessToken, shopDomain);
                     return await this.shopifyService.updateProduct(shopDomain, accessToken, suggestion.productId, {

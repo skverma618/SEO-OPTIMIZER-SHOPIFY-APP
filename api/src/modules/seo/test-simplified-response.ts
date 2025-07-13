@@ -51,7 +51,8 @@ async function testSimplifiedResponse() {
 
     const simplifiedService = new SimplifiedSeoAnalysisService(
       parallelSeoService,
-      transformerService
+      transformerService,
+      {} as any // Mock shopRepository for testing
     );
 
     console.log('🔄 Running simplified SEO analysis...');

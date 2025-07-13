@@ -10,8 +10,9 @@ import {
   SuggestionPriority,
 } from '../../../dto/seo.dto';
 import { MetafieldsAnalysisSchema } from '../prompts/schemas';
-import { SYSTEM_PROMPTS } from '../prompts/system-prompts';
+import { SYSTEM_PROMPTS, createBrandAwareSystemPrompt } from '../prompts/system-prompts';
 import { TASK_PROMPTS } from '../prompts/task-prompts';
+import { BrandMapping } from '../../../interfaces/brand.interface';
 
 @Injectable()
 export class MetafieldsAnalysisWorker {
@@ -21,15 +22,18 @@ export class MetafieldsAnalysisWorker {
   constructor(private configService: ConfigService) {
     this.llm = new ChatOpenAI({
       openAIApiKey: this.configService.get<string>('OPENAI_API_KEY'),
-      modelName: 'gpt-3.5-turbo',
-      temperature: 0.3,
+      modelName: this.configService.get<string>('OPENAI_MODEL_NAME') || 'gpt-4o-mini',
+      temperature: parseFloat(this.configService.get<string>('OPENAI_TEMPERATURE') || '0.1'),
     });
   }
 
-  async analyzeMetafields(inputs: ProductMetaFieldAnalysisInputDto[]): Promise<AnalysisResultDto> {
+  async analyzeMetafields(inputs: ProductMetaFieldAnalysisInputDto[], brandMapping?: BrandMapping): Promise<AnalysisResultDto> {
     try {
+      // Create brand-aware system prompt
+      const brandAwareSystemPrompt = createBrandAwareSystemPrompt(SYSTEM_PROMPTS.METADATA_SPECIALIST, brandMapping);
+
       const prompt = ChatPromptTemplate.fromMessages([
-        ['system', SYSTEM_PROMPTS.METADATA_SPECIALIST],
+        ['system', brandAwareSystemPrompt],
         ['human', TASK_PROMPTS.METAFIELDS_ANALYSIS],
       ]);
 
@@ -51,7 +55,7 @@ export class MetafieldsAnalysisWorker {
 
       // Transform suggestions to include proper IDs and types
       const suggestions = response.suggestions.map((suggestion: any, index: number) => ({
-        id: `metafield-${suggestion.metaId || inputs[index]?.productMetaId || index}`,
+        id: suggestion.metaId || inputs[index]?.productMetaId || `${index + 1}`,
         type: this.mapSuggestionType(suggestion.type),
         priority: suggestion.priority as SuggestionPriority,
         field: suggestion.field,
@@ -61,11 +65,61 @@ export class MetafieldsAnalysisWorker {
         impact: suggestion.impact,
       }));
 
+      // Handle case where LLM returns 0 scores or empty descriptions
+      let overallScore = response.overallScore;
+      let fieldScores = response.fieldScores;
+      let feedback = response.feedback;
+
+      // If field scores have 0 values or empty descriptions, calculate proper scores
+      if (fieldScores.some(fs => fs.score === 0 || !fs.description)) {
+        fieldScores = fieldScores.map(fs => {
+          if (fs.score === 0 || !fs.description) {
+            // Calculate score based on suggestions for this field
+            const fieldSuggestions = suggestions.filter(s => s.field === fs.field);
+            let calculatedScore = 70; // Default score
+            
+            if (fieldSuggestions.length > 0) {
+              // Lower score if there are high priority suggestions
+              const hasHighPriority = fieldSuggestions.some(s => s.priority === SuggestionPriority.HIGH);
+              const hasMediumPriority = fieldSuggestions.some(s => s.priority === SuggestionPriority.MEDIUM);
+              
+              if (hasHighPriority) {
+                calculatedScore = 45;
+              } else if (hasMediumPriority) {
+                calculatedScore = 65;
+              } else {
+                calculatedScore = 75;
+              }
+            }
+
+            return {
+              field: fs.field,
+              score: calculatedScore,
+              description: calculatedScore < 60 ? `${fs.field} needs significant improvement` :
+                          calculatedScore < 80 ? `${fs.field} needs minor optimization` :
+                          `${fs.field} is well optimized`
+            };
+          }
+          return fs;
+        });
+      }
+
+      // Calculate overall score if it's 0
+      if (overallScore === 0) {
+        overallScore = Math.round(fieldScores.reduce((sum, fs) => sum + fs.score, 0) / fieldScores.length);
+      }
+
+      // Ensure feedback is not empty
+      if (!feedback) {
+        feedback = `Metafields analysis completed. Overall score: ${overallScore}/100. ${suggestions.length} suggestions provided.`;
+      }
+
       return {
-        score: Math.min(100, Math.max(0, response.score)),
+        score: Math.min(100, Math.max(0, overallScore)),
         suggestions,
         analysisType: 'metafields-analysis',
-        feedback: response.feedback,
+        feedback,
+        fieldScores,
       };
     } catch (error) {
       this.logger.error('Error in metafields analysis', error);
@@ -76,32 +130,41 @@ export class MetafieldsAnalysisWorker {
   private mapSuggestionType(type: string): SuggestionType {
     switch (type.toLowerCase()) {
       case 'title':
-        return SuggestionType.TITLE;
+      case 'metafield-title':
+        return SuggestionType.METAFIELD_TITLE;
       case 'description':
-        return SuggestionType.DESCRIPTION;
-      case 'meta-description':
-        return SuggestionType.META_DESCRIPTION;
+      case 'metafield-description':
+        return SuggestionType.METAFIELD_DESCRIPTION;
+      case 'keywords':
+      case 'metafield-keywords':
+        return SuggestionType.METAFIELD_KEYWORDS;
+      case 'structured-data':
+        return SuggestionType.STRUCTURED_DATA;
+      case 'schema-markup':
+        return SuggestionType.SCHEMA_MARKUP;
       default:
-        return SuggestionType.META_DESCRIPTION;
+        return SuggestionType.STRUCTURED_DATA;
     }
   }
 
   private getFallbackAnalysis(inputs: ProductMetaFieldAnalysisInputDto[]): any {
     const suggestions: SuggestionDto[] = [];
-    let score = 85; // Base score for metafields
+    let seoMetafieldsScore = 85;
+    let structuredDataScore = 80;
+    let schemaMarkupScore = 75;
     let optimizationOpportunities = 0;
 
     // Group metafields by product for analysis
     const productMetafields = this.groupMetafieldsByProduct(inputs);
 
     Object.entries(productMetafields).forEach(([productId, metafields]) => {
-      const hasGlobalTitleTag = metafields.some(m => 
-        m.productMetaValue.includes('title_tag') || 
+      const hasGlobalTitleTag = metafields.some(m =>
+        m.productMetaValue.includes('title_tag') ||
         this.isLikelyTitleTag(m.productMetaValue)
       );
       
-      const hasGlobalDescriptionTag = metafields.some(m => 
-        m.productMetaValue.includes('description_tag') || 
+      const hasGlobalDescriptionTag = metafields.some(m =>
+        m.productMetaValue.includes('description_tag') ||
         this.isLikelyDescriptionTag(m.productMetaValue)
       );
 
@@ -118,7 +181,7 @@ export class MetafieldsAnalysisWorker {
           impact: 'Title tag metafields can improve search visibility and CTR',
         });
         optimizationOpportunities++;
-        score -= 15;
+        seoMetafieldsScore -= 25;
       }
 
       if (!hasGlobalDescriptionTag) {
@@ -133,7 +196,7 @@ export class MetafieldsAnalysisWorker {
           impact: 'Description tag metafields can improve search snippets and CTR',
         });
         optimizationOpportunities++;
-        score -= 15;
+        seoMetafieldsScore -= 25;
       }
 
       // Analyze existing metafields for optimization
@@ -151,7 +214,7 @@ export class MetafieldsAnalysisWorker {
               impact: 'Longer, descriptive title tags improve search visibility',
             });
             optimizationOpportunities++;
-            score -= 8;
+            seoMetafieldsScore -= 15;
           }
         }
 
@@ -168,17 +231,44 @@ export class MetafieldsAnalysisWorker {
               impact: 'Detailed description tags improve search snippets',
             });
             optimizationOpportunities++;
-            score -= 8;
+            seoMetafieldsScore -= 15;
           }
         }
       });
     });
 
+    // Adjust scores based on optimization opportunities
+    if (optimizationOpportunities > 3) {
+      structuredDataScore -= 20;
+      schemaMarkupScore -= 25;
+    }
+
+    const fieldScores = [
+      {
+        field: 'SEO Metafields',
+        score: Math.max(0, seoMetafieldsScore),
+        description: seoMetafieldsScore < 60 ? 'SEO metafields need significant improvement' : seoMetafieldsScore < 80 ? 'SEO metafields need minor optimization' : 'SEO metafields are well configured',
+      },
+      {
+        field: 'Structured Data',
+        score: Math.max(0, structuredDataScore),
+        description: structuredDataScore < 60 ? 'Structured data implementation needs improvement' : structuredDataScore < 80 ? 'Structured data needs minor enhancements' : 'Structured data is well implemented',
+      },
+      {
+        field: 'Schema Markup',
+        score: Math.max(0, schemaMarkupScore),
+        description: schemaMarkupScore < 60 ? 'Schema markup needs significant enhancement' : schemaMarkupScore < 80 ? 'Schema markup needs minor improvements' : 'Schema markup is well optimized',
+      },
+    ];
+
+    const overallScore = Math.round((seoMetafieldsScore + structuredDataScore + schemaMarkupScore) / 3);
+
     return {
-      score: Math.max(0, score),
+      score: Math.max(0, overallScore),
       suggestions,
       analysisType: 'metafields-analysis',
       feedback: `Fallback analysis: Analyzed ${inputs.length} metafields across ${Object.keys(productMetafields).length} products. Found ${optimizationOpportunities} optimization opportunities for better SEO performance.`,
+      fieldScores,
     };
   }
 

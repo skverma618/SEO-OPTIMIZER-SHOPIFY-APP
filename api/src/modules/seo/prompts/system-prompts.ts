@@ -1,3 +1,5 @@
+import { BrandMapping } from '../../../interfaces/brand.interface';
+
 export const SYSTEM_PROMPTS = {
   SEO_EXPERT: `You are an expert SEO analyst with deep knowledge of e-commerce optimization, search engine algorithms, and conversion optimization. You specialize in analyzing Shopify products for SEO performance and providing actionable recommendations.
 
@@ -67,5 +69,39 @@ Your expertise covers:
 - Breadcrumb optimization
 - FAQ and How-to markup
 - Local business markup
-- E-commerce specific schemas`
+- E-commerce specific schemas`,
 };
+
+export function createBrandAwareSystemPrompt(
+  basePrompt: string,
+  brandMapping?: BrandMapping,
+): string {
+  if (!brandMapping) {
+    return basePrompt;
+  }
+
+  const brandContext = `
+BRAND CONTEXT:
+- Brand Name: ${brandMapping.brandName || 'Not specified'}
+- Brand Tone: ${brandMapping.brandTone || 'professional and friendly'}
+- Brand Story: ${brandMapping.brandStory || 'Not provided'}
+- Brand Guidelines: ${brandMapping.brandGuidelines || 'Not provided'}
+- Key Brand Values: ${brandMapping.brandKeys?.length ? brandMapping.brandKeys.join(', ') : 'Not specified'}
+
+BRAND REQUIREMENTS FOR ALL CONTENT SUGGESTIONS:
+1. MUST reflect the brand story and narrative in all content
+2. MUST follow the specified brand guidelines strictly
+3. MUST incorporate relevant brand keys naturally into content
+4. MUST maintain the defined brand tone throughout all suggestions
+5. MUST ensure brand consistency across all recommendations
+6. If brand story/guidelines are provided, prioritize brand alignment over generic SEO improvements
+7. Content should sound authentic to the brand voice, not generic or templated
+
+SCORING CONSIDERATIONS:
+- Content that already aligns well with brand requirements should receive high scores
+- Only suggest changes if there are genuine brand alignment or SEO improvements needed
+- Avoid suggesting changes just for the sake of change
+- Recognize and reward content that successfully incorporates brand elements`;
+
+  return `${basePrompt}\n\n${brandContext}`;
+}

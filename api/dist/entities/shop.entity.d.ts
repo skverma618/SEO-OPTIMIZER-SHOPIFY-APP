@@ -6,6 +6,7 @@ export declare class Shop {
     shopName: string;
     planName: string;
     isActive: boolean;
+    brandMapping: any;
     installedAt: Date;
     updatedAt: Date;
 }
