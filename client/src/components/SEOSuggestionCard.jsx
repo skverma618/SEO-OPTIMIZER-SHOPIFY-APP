@@ -9,10 +9,12 @@ import {
   Checkbox,
   TextField,
   ButtonGroup,
+  Thumbnail,
 } from '@shopify/polaris';
 import {
   CheckIcon,
   EditIcon,
+  ImageIcon,
 } from '@shopify/polaris-icons';
 
 // Score indicator component with circular ring
@@ -249,6 +251,42 @@ function SEOSuggestionCard({
               )}
             </InlineStack>
           </BlockStack>
+
+          {/* Image display for alt-text suggestions */}
+          {suggestion.type === 'alt-text' && (
+            <BlockStack gap="200">
+              <Text variant="bodySm" fontWeight="medium">
+                Image:
+              </Text>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '8px' }}>
+                {suggestion.imageUrl ? (
+                  <Thumbnail
+                    source={suggestion.imageUrl}
+                    alt={suggestion.current || 'Product image'}
+                    size="large"
+                  />
+                ) : (
+                  <div style={{
+                    width: '120px',
+                    height: '120px',
+                    backgroundColor: '#f6f6f7',
+                    border: '2px dashed #c9cccf',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    gap: '8px'
+                  }}>
+                    <ImageIcon />
+                    <Text variant="bodySm" color="subdued">
+                      No image available
+                    </Text>
+                  </div>
+                )}
+              </div>
+            </BlockStack>
+          )}
 
         </BlockStack>
       </div>
