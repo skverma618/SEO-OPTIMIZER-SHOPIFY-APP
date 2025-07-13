@@ -34,7 +34,7 @@ export class SeoService {
       const allProducts = await this.fetchAllProducts(shopDomain, shop.accessToken);
 
       // Analyze products for SEO issues
-      const scanResults = await this.analyzeProductsForSEO(allProducts);
+      const scanResults = await this.analyzeProductsForSEO(allProducts, shopDomain);
 
       // Save scan history
       await this.saveScanHistory(shopDomain, 'store', scanResults);
@@ -65,7 +65,7 @@ export class SeoService {
       const products = await this.fetchProductsByIds(shopDomain, shop.accessToken, productIds);
 
       // Analyze products for SEO issues
-      const scanResults = await this.analyzeProductsForSEO(products);
+      const scanResults = await this.analyzeProductsForSEO(products, shopDomain);
 
       // Save scan history
       await this.saveScanHistory(shopDomain, 'products', scanResults);
@@ -176,12 +176,12 @@ export class SeoService {
     return products;
   }
 
-  private async analyzeProductsForSEO(products: any[]) {
+  private async analyzeProductsForSEO(products: any[], shopDomain?: string) {
     try {
       this.logger.log(`Starting SEO analysis for ${products.length} products`);
       
       // Use the SimplifiedSeoAnalysisService to analyze products with LLM
-      const analysisResults = await this.simplifiedSeoAnalysisService.analyzeProductsSimplified(products);
+      const analysisResults = await this.simplifiedSeoAnalysisService.analyzeProductsSimplified(products, shopDomain);
       
       this.logger.log(`Completed SEO analysis for ${products.length} products`);
       return analysisResults;

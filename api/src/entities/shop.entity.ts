@@ -29,6 +29,9 @@ export class Shop {
   @Column({ default: true })
   isActive: boolean;
 
+  @Column({ type: 'json', nullable: true })
+  brandMapping: any;
+
   @CreateDateColumn()
   installedAt: Date;
 
