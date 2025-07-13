@@ -13,6 +13,7 @@ import {
 import { SearchIcon, ChartVerticalIcon } from '@shopify/polaris-icons';
 import { useNavigate } from 'react-router-dom';
 import ProductSelectionModal from './ProductSelectionModal';
+import BrandStoryModal from './BrandStoryModal';
 import { useShop } from '../contexts/ShopContext';
 import ApiService from '../services/api';
 
@@ -20,6 +21,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const { shop } = useShop();
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [isBrandStoryModalOpen, setIsBrandStoryModalOpen] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [scanType, setScanType] = useState(null);
   const [error, setError] = useState(null);
@@ -137,6 +139,14 @@ function Dashboard() {
     setIsProductModalOpen(false);
   }, []);
 
+  const handleBrandStoryOpen = useCallback(() => {
+    setIsBrandStoryModalOpen(true);
+  }, []);
+
+  const handleBrandStoryClose = useCallback(() => {
+    setIsBrandStoryModalOpen(false);
+  }, []);
+
   return (
     <Page
       title="SEO Optimizer"
@@ -158,6 +168,27 @@ function Dashboard() {
             meta descriptions, image alt text, and technical SEO improvements.
           </p>
         </Banner>
+
+        <Card>
+          <BlockStack gap="400">
+            <Text variant="headingMd" as="h2">
+              Brand Configuration
+            </Text>
+            
+            <Text variant="bodyMd" color="subdued">
+              Configure your brand story to generate more personalized SEO content
+            </Text>
+
+            <InlineStack gap="300">
+              <Button
+                onClick={handleBrandStoryOpen}
+                disabled={isScanning}
+              >
+                Configure Brand Story
+              </Button>
+            </InlineStack>
+          </BlockStack>
+        </Card>
 
         <Card>
           <BlockStack gap="400">
@@ -278,6 +309,13 @@ function Dashboard() {
           open={isProductModalOpen}
           onConfirm={handleProductSelectionConfirm}
           onCancel={handleProductSelectionCancel}
+        />
+      )}
+
+      {isBrandStoryModalOpen && (
+        <BrandStoryModal
+          open={isBrandStoryModalOpen}
+          onClose={handleBrandStoryClose}
         />
       )}
     </Page>

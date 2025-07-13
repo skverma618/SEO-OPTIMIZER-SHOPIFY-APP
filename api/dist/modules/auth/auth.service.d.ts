@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
 import { Shop } from '../../entities/shop.entity';
+import { BrandStoryDto } from '../../dto/brand.dto';
 export declare class AuthService {
     private configService;
     private shopRepository;
@@ -16,4 +17,6 @@ export declare class AuthService {
     private getShopInfo;
     private saveShop;
     private generateRandomState;
+    getBrandStory(shop: string): Promise<any>;
+    saveBrandStory(shop: string, brandStoryDto: BrandStoryDto): Promise<any>;
 }

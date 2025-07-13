@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Shop } from '../../entities/shop.entity';
+import { BrandStoryDto } from '../../dto/brand.dto';
 import axios from 'axios';
 
 @Injectable()
@@ -149,5 +150,55 @@ export class AuthService {
   private generateRandomState(): string {
     return Math.random().toString(36).substring(2, 15) +
            Math.random().toString(36).substring(2, 15);
+  }
+
+  async getBrandStory(shop: string): Promise<any> {
+    try {
+      const shopEntity = await this.shopRepository.findOne({
+        where: { shopDomain: shop },
+      });
+
+      if (!shopEntity) {
+        throw new Error('Shop not found');
+      }
+
+      // If brandMapping exists, return it, otherwise return brandName as shopName
+      const brandMapping = shopEntity.brandMapping || {};
+      
+      // If brandName is not in brandMapping, use shopName
+      if (!brandMapping.brandName && shopEntity.shopName) {
+        brandMapping.brandName = shopEntity.shopName;
+      }
+
+      return brandMapping;
+    } catch (error) {
+      this.logger.error('Error getting brand story', error);
+      throw error;
+    }
+  }
+
+  async saveBrandStory(shop: string, brandStoryDto: BrandStoryDto): Promise<any> {
+    try {
+      const shopEntity = await this.shopRepository.findOne({
+        where: { shopDomain: shop },
+      });
+
+      if (!shopEntity) {
+        throw new Error('Shop not found');
+      }
+
+      // Update brandMapping with the new brand story data
+      shopEntity.brandMapping = {
+        ...shopEntity.brandMapping,
+        ...brandStoryDto,
+      };
+
+      await this.shopRepository.save(shopEntity);
+
+      return { success: true };
+    } catch (error) {
+      this.logger.error('Error saving brand story', error);
+      throw error;
+    }
   }
 }
