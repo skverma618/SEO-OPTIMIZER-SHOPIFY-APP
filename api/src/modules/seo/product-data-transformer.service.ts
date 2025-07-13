@@ -65,6 +65,7 @@ export class ProductDataTransformerService {
           images.push({
             productId,
             productImageId: edge.node.id,
+            productImageUrl: edge.node.url || edge.node.originalSrc || edge.node.src,
             productImageAltText: edge.node.altText || '',
           });
         }
@@ -75,6 +76,7 @@ export class ProductDataTransformerService {
         images.push({
           productId,
           productImageId: image.id,
+          productImageUrl: image.url || image.originalSrc || image.src,
           productImageAltText: image.altText || '',
         });
       });
@@ -175,7 +177,7 @@ export class ProductDataTransformerService {
     description: string,
     seoTitle: string,
     seoDescription: string,
-    images: Array<{ id: string; altText: string }> = [],
+    images: Array<{ id: string; altText: string; url?: string }> = [],
     metafields: Array<{ id: string; value: string }> = [],
   ): ParallelAnalysisInputDto {
     
@@ -194,6 +196,7 @@ export class ProductDataTransformerService {
     const imageInputs: ProductImageAnalysisInputDto[] = images.map(img => ({
       productId,
       productImageId: img.id,
+      productImageUrl: img.url,
       productImageAltText: img.altText,
     }));
 

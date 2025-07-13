@@ -58,6 +58,7 @@ export const ImageAnalysisSchema = z.object({
   feedback: z.string(),
   suggestions: z.array(SuggestionSchema.extend({
     imageId: z.string().nullable(),
+    imageUrl: z.string().nullable(), // Explicitly include imageUrl for LLM structured output
   })),
 });
 

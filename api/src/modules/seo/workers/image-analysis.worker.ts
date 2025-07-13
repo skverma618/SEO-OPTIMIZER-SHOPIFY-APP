@@ -70,17 +70,24 @@ export class ImageAnalysisWorker {
       }
 
       // Transform suggestions to include proper IDs and types
-      const suggestions = response.suggestions.map((suggestion: any, index: number) => ({
-        id: suggestion.imageId || inputs[index]?.productImageId || `${index + 1}`,
-        type: SuggestionType.ALT_TEXT,
-        priority: suggestion.priority as SuggestionPriority,
-        field: 'images.altText',
-        current: suggestion.current,
-        suggested: suggestion.suggested,
-        reason: suggestion.reason,
-        impact: suggestion.impact,
-        imageUrl: inputs[index]?.productImageUrl,
-      }));
+      const suggestions = response.suggestions.map((suggestion: any, index: number) => {
+        // Find the corresponding input by matching imageId or use index as fallback
+        const correspondingInput = inputs.find(input =>
+          input.productImageId === suggestion.imageId
+        ) || inputs[index];
+
+        return {
+          id: suggestion.imageId || correspondingInput?.productImageId || `${index + 1}`,
+          type: SuggestionType.ALT_TEXT,
+          priority: suggestion.priority as SuggestionPriority,
+          field: 'images.altText',
+          current: suggestion.current,
+          suggested: suggestion.suggested,
+          reason: suggestion.reason,
+          impact: suggestion.impact,
+          imageUrl: correspondingInput?.productImageUrl,
+        };
+      });
 
       // Handle case where LLM returns 0 scores or empty descriptions
       let overallScore = response.overallScore;
@@ -157,7 +164,7 @@ export class ImageAnalysisWorker {
       // Check for missing alt text
       if (!input.productImageAltText || input.productImageAltText.trim().length === 0) {
         suggestions.push({
-          id: `alt-text-${input.productImageId}-missing`,
+          id: input.productImageId,
           type: SuggestionType.ALT_TEXT,
           priority: SuggestionPriority.HIGH,
           field: 'images.altText',
@@ -173,7 +180,7 @@ export class ImageAnalysisWorker {
       // Check for poor quality alt text
       else if (input.productImageAltText.length < 10) {
         suggestions.push({
-          id: `alt-text-${input.productImageId}-short`,
+          id: input.productImageId,
           type: SuggestionType.ALT_TEXT,
           priority: SuggestionPriority.MEDIUM,
           field: 'images.altText',
@@ -189,7 +196,7 @@ export class ImageAnalysisWorker {
       // Check for overly long alt text
       else if (input.productImageAltText.length > 125) {
         suggestions.push({
-          id: `alt-text-${input.productImageId}-long`,
+          id: input.productImageId,
           type: SuggestionType.ALT_TEXT,
           priority: SuggestionPriority.LOW,
           field: 'images.altText',
@@ -211,7 +218,7 @@ export class ImageAnalysisWorker {
         } else {
           imageScore = 70; // Adequate but could be more descriptive
           suggestions.push({
-            id: `alt-text-${input.productImageId}-enhance`,
+            id: input.productImageId,
             type: SuggestionType.ALT_TEXT,
             priority: SuggestionPriority.LOW,
             field: 'images.altText',

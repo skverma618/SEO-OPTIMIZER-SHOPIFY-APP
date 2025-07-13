@@ -36,8 +36,10 @@ Rate each image field 0-100 and provide suggestions with actual improved content
 Required format:
 - overallScore: number 0-100
 - fieldScores: array with field, score, description
-- suggestions: array with type, priority, field, current, suggested, reason, impact
-- feedback: string summary`,
+- suggestions: array with type, priority, field, current, suggested, reason, impact, imageUrl, imageId
+- feedback: string summary
+
+IMPORTANT: For each suggestion, include the imageUrl and imageId from the corresponding image data.`,
 
   METAFIELDS_ANALYSIS: `Analyze these metafields:
 
