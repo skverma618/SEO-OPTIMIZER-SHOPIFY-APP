@@ -204,22 +204,34 @@ function SEOSuggestionCard({
           <BlockStack gap="200">
             {/* Suggestion with highlighted reason */}
             <div>
-              <Text variant="bodySm" fontWeight="medium">
+              <Text variant="bodySm" fontWeight="bold">
                 Suggestion: <span style={{ backgroundColor: '#fef3c7', padding: '2px 4px', borderRadius: '3px' }}>{suggestion.reason}</span>
               </Text>
             </div>
             
             {/* Impact with highlighted text */}
             <div>
-              <Text variant="bodySm" fontWeight="medium">
+              <Text variant="bodySm" fontWeight="bold">
                 Impact: <span style={{ backgroundColor: '#dcfce7', padding: '2px 4px', borderRadius: '3px' }}>{suggestion.impact}</span>
               </Text>
             </div>
             
+            {/* Current value */}
+            {suggestion.current && (
+              <div>
+                <Text variant="bodySm" fontWeight="bold" color="subdued">
+                  Current:
+                </Text>
+                <Text variant="bodySm" color="subdued">
+                  "{suggestion.current}"
+                </Text>
+              </div>
+            )}
+            
             {/* Suggested value with edit icon */}
             <InlineStack gap="200" align="space-between">
               <div style={{ flex: 1 }}>
-                <Text variant="bodySm" fontWeight="medium" color="success">
+                <Text variant="bodySm" fontWeight="bold" color="success">
                   Suggested:
                 </Text>
                 {isEditing ? (
@@ -255,7 +267,7 @@ function SEOSuggestionCard({
           {/* Image display for alt-text suggestions */}
           {suggestion.type === 'alt-text' && (
             <BlockStack gap="200">
-              <Text variant="bodySm" fontWeight="medium">
+              <Text variant="bodySm" fontWeight="bold">
                 Image:
               </Text>
               <div style={{ display: 'flex', justifyContent: 'center', padding: '8px' }}>
