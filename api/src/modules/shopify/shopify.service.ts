@@ -147,49 +147,85 @@ export class ShopifyService {
   }
 
   async updateProduct(
-    shopDomain: string,
-    accessToken: string,
-    productId: string,
-    updates: any,
-  ) {
-    const client = this.createGraphQLClient(shopDomain, accessToken);
+  shopDomain: string,
+  accessToken: string,
+  productId: string, // Must be a GraphQL global ID!
+  updates: any,
+) {
+  const client = this.createGraphQLClient(shopDomain, accessToken);
 
-    const graphqlMutation = `
-      mutation productUpdate($input: ProductInput!) {
-        productUpdate(input: $input) {
-          product {
-            id
+  console.log("=== Shopify Product Update: Start ===");
+  console.log("Shop Domain:", shopDomain);
+  console.log("Product ID:", productId);
+  console.log("Update Payload:", updates);
+
+  const graphqlMutation = `
+    mutation productUpdate($input: ProductInput!) {
+      productUpdate(input: $input) {
+        product {
+          id
+          title
+          descriptionHtml
+          seo {
             title
-            seo {
-              title
-              description
-            }
-          }
-          userErrors {
-            field
-            message
+            description
           }
         }
+        userErrors {
+          field
+          message
+        }
       }
-    `;
-
-    try {
-      const response = await client.post('', {
-        query: graphqlMutation,
-        variables: {
-          input: {
-            id: productId,
-            ...updates,
-          },
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      this.logger.error('Error updating product in Shopify', error);
-      throw error;
     }
+  `;
+
+  try {
+    console.log("Sending GraphQL mutation to Shopify...");
+
+    const input = this.buildProductUpdateInput(productId, updates);
+
+    console.log("INPUT SENT TO SHOPIFY API : ", input)
+    const response = await client.post('', {
+      query: graphqlMutation,
+      variables: { input },
+    });
+
+    // const response = await client.post('', {
+    //   query: graphqlMutation,
+    //   variables: {
+    //     input: {
+    //       id: productId, // e.g. "gid://shopify/Product/1234567890"
+    //       ...updates,    // e.g. { descriptionHtml: "<p>New description</p>" }
+    //     },
+    //   },
+    // });
+
+    // Log the full response for debugging
+    console.log("Raw response from Shopify:", JSON.stringify(response.data, null, 2));
+
+    const result = response.data.data.productUpdate;
+
+    if (result.userErrors && result.userErrors.length > 0) {
+      console.warn("Shopify returned userErrors:", result.userErrors);
+      return {
+        success: false,
+        errors: result.userErrors,
+      };
+    }
+
+    console.log("Product updated successfully:", result.product);
+    return {
+      success: true,
+      product: result.product,
+    };
+  } catch (error) {
+    console.error('Error updating product in Shopify:', error);
+    throw error;
+  } finally {
+    console.log("=== Shopify Product Update: End ===");
   }
+}
+
 
   async updateProductImage(
     shopDomain: string,
@@ -232,9 +268,91 @@ export class ShopifyService {
     }
   }
 
+  async updateProductMetafield(
+    shopDomain: string,
+    accessToken: string,
+    productId: string,
+    namespace: string,
+    key: string,
+    value: string,
+    type: string = 'single_line_text_field',
+  ) {
+    const client = this.createGraphQLClient(shopDomain, accessToken);
+
+    const graphqlMutation = `
+      mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+        metafieldsSet(metafields: $metafields) {
+          metafields {
+            id
+            namespace
+            key
+            value
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+    `;
+
+    try {
+      const response = await client.post('', {
+        query: graphqlMutation,
+        variables: {
+          metafields: [
+            {
+              ownerId: productId,
+              namespace,
+              key,
+              value,
+              type,
+            },
+          ],
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      this.logger.error('Error updating product metafield in Shopify', error);
+      throw error;
+    }
+  }
+
   async verifyWebhook(data: string, hmacHeader: string): Promise<boolean> {
     // TODO: Implement webhook verification logic
     // This would use crypto to verify the HMAC signature
     return true;
   }
+
+  private buildProductUpdateInput(productId: string, updates: any, currentProduct?: any) {
+    const input: any = { id: productId };
+
+    // Update title if provided
+    if (updates.title !== undefined) {
+      input.title = updates.title;
+    }
+
+    // Update descriptionHtml if provided
+    if (updates.descriptionHtml !== undefined) {
+      input.descriptionHtml = updates.descriptionHtml;
+    }
+
+    // Update SEO fields dynamically
+    if (updates.seo) {
+      input.seo = {
+        title: updates.seo.title !== undefined
+          ? updates.seo.title
+          : currentProduct?.seo?.title || '',
+        description: updates.seo.description !== undefined
+          ? updates.seo.description
+          : currentProduct?.seo?.description || ''
+      };
+    }
+
+    // Add other fields as needed...
+
+    return input;
+  }
+
 }

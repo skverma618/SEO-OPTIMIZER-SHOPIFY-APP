@@ -14,8 +14,8 @@ export const AppDataSource = new DataSource({
   username: configService.get('DATABASE_USERNAME') || 'postgres',
   password: configService.get('DATABASE_PASSWORD') || 'postgres',
   database: configService.get('DATABASE_NAME') || 'seo_optimizer',
-  entities: ['src/entities/*.entity.ts'],
-  migrations: ['src/migrations/*.ts'],
-  synchronize: false,
+  entities: ['api/src/entities/*.entity.ts'],
+  migrations: ['api/src/migrations/*.ts'],
+  synchronize: true,
   logging: configService.get('NODE_ENV') === 'development',
 });

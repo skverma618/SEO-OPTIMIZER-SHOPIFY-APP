@@ -1,0 +1,138 @@
+[
+  {
+    "productId": "gid://shopify/Product/8882869141756",
+    "overallScore": 60,
+    "productContentAnalysis": {
+      "score": 70,
+      "analysisType": "product-content",
+      "feedback": "Fallback analysis: Basic SEO checks completed. Consider optimizing title length and description details.",
+      "suggestions": [
+        {
+          "id": "title-8882869141756-length",
+          "type": "title",
+          "priority": "medium",
+          "field": "product.title",
+          "current": "RYZE Gums Frosty Mint Flavour - 2mg",
+          "suggested": "RYZE Gums Frosty Mint Flavour - 2mg | Premium Nicotine Gum for Smoking Cessation",
+          "reason": "Product title could be more descriptive and include key benefits",
+          "impact": "Better title improves search visibility and click-through rates"
+        }
+      ]
+    },
+    "seoMetadataAnalysis": {
+      "score": 75,
+      "analysisType": "seo-metadata",
+      "feedback": "Fallback analysis: Basic SEO metadata checks completed. Focus on optimizing title and description lengths.",
+      "suggestions": []
+    },
+    "imageAnalysis": {
+      "score": 0,
+      "analysisType": "image-analysis",
+      "feedback": "Fallback analysis: Analyzed 13 images. 12 images need alt text improvements for better SEO and accessibility.",
+      "suggestions": [
+        {
+          "id": "alt-text-43948513820924-missing",
+          "type": "alt-text",
+          "priority": "high",
+          "field": "images.altText",
+          "current": "",
+          "suggested": "Product image showing main features and details",
+          "reason": "Missing alt text hurts accessibility and SEO",
+          "impact": "Improves image search visibility and accessibility compliance"
+        }
+      ]
+    },
+    "metafieldsAnalysis": {
+      "score": 85,
+      "analysisType": "metafields-analysis",
+      "feedback": "Fallback analysis: Analyzed 5 metafields across 1 products. Found 0 optimization opportunities for better SEO performance.",
+      "suggestions": []
+    },
+    "allSuggestions": [
+      {
+        "id": "alt-text-43948513820924-missing",
+        "type": "alt-text",
+        "priority": "high",
+        "field": "images.altText",
+        "current": "",
+        "suggested": "Product image showing main features and details",
+        "reason": "Missing alt text hurts accessibility and SEO",
+        "impact": "Improves image search visibility and accessibility compliance"
+      }
+    ],
+    "executionTime": 534
+  },
+  {
+    "productId": "gid://shopify/Product/8882869240060",
+    "overallScore": 49,
+    "productContentAnalysis": {
+      "score": 70,
+      "analysisType": "product-content",
+      "feedback": "Fallback analysis: Basic SEO checks completed. Consider optimizing title length and description details.",
+      "suggestions": []
+    },
+    "seoMetadataAnalysis": {
+      "score": 50,
+      "analysisType": "seo-metadata",
+      "feedback": "Fallback analysis: Basic SEO metadata checks completed. Focus on optimizing title and description lengths.",
+      "suggestions": [
+        {
+          "id": "seo-title-8882869240060-missing",
+          "type": "title",
+          "priority": "high",
+          "field": "seo.title",
+          "current": "",
+          "suggested": "Premium Quality Product - Best Price | Brand Name",
+          "reason": "Missing SEO title reduces search engine visibility",
+          "impact": "SEO titles are crucial for search rankings and click-through rates"
+        }
+      ]
+    },
+    "imageAnalysis": {
+      "score": 0,
+      "analysisType": "image-analysis",
+      "feedback": "Fallback analysis: Analyzed 12 images. 11 images need alt text improvements for better SEO and accessibility.",
+      "suggestions": [
+        {
+          "id": "alt-text-43948513820924-missing",
+          "type": "alt-text",
+          "priority": "high",
+          "field": "images.altText",
+          "current": "",
+          "suggested": "Product image showing main features and details",
+          "reason": "Missing alt text hurts accessibility and SEO",
+          "impact": "Improves image search visibility and accessibility compliance"
+        }
+      ]
+    },
+    "metafieldsAnalysis": {
+      "score": 70,
+      "analysisType": "metafields-analysis",
+      "feedback": "Fallback analysis: Analyzed 3 metafields across 1 products. Found 1 optimization opportunities for better SEO performance.",
+      "suggestions": []
+    },
+    "allSuggestions": [
+      {
+        "id": "seo-title-8882869240060-missing",
+        "type": "title",
+        "priority": "high",
+        "field": "seo.title",
+        "current": "",
+        "suggested": "Premium Quality Product - Best Price | Brand Name",
+        "reason": "Missing SEO title reduces search engine visibility",
+        "impact": "SEO titles are crucial for search rankings and click-through rates"
+      },
+      {
+        "id": "alt-text-43948513820924-missing",
+        "type": "alt-text",
+        "priority": "high",
+        "field": "images.altText",
+        "current": "",
+        "suggested": "Product image showing main features and details",
+        "reason": "Missing alt text hurts accessibility and SEO",
+        "impact": "Improves image search visibility and accessibility compliance"
+      }
+    ],
+    "executionTime": 531
+  }
+]

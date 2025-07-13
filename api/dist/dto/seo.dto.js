@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ApplyBulkSuggestionsDto = exports.ApplySuggestionDto = exports.ScanResultDto = exports.ProductScanResultDto = exports.SuggestionDto = exports.ScanProductsDto = exports.SuggestionPriority = exports.SuggestionType = void 0;
+exports.ParallelAnalysisInputDto = exports.ParallelAnalysisResultDto = exports.AnalysisResultDto = exports.ProductMetaFieldAnalysisInputDto = exports.ProductImageAnalysisInputDto = exports.ProductSeoAnalysisInputDto = exports.ProductAnalysisInputDto = exports.ApplyBulkSuggestionsNewDto = exports.ProductBulkSuggestionsDto = exports.ApplyBulkSuggestionsDto = exports.ApplySuggestionDto = exports.ScanResultDto = exports.ProductScanResultDto = exports.SuggestionDto = exports.ScanProductsDto = exports.SuggestionPriority = exports.SuggestionType = void 0;
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
 var SuggestionType;
@@ -233,4 +233,316 @@ __decorate([
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
 ], ApplyBulkSuggestionsDto.prototype, "suggestions", void 0);
+class ProductBulkSuggestionsDto {
+    productId;
+    title;
+    handle;
+    suggestions;
+}
+exports.ProductBulkSuggestionsDto = ProductBulkSuggestionsDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Shopify product ID',
+        example: 'gid://shopify/Product/123456789',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductBulkSuggestionsDto.prototype, "productId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product title',
+        example: 'Premium Quality T-Shirt',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductBulkSuggestionsDto.prototype, "title", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product handle/slug',
+        example: 'premium-quality-t-shirt',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductBulkSuggestionsDto.prototype, "handle", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Array of selected suggestions for this product',
+        type: [ApplySuggestionDto],
+    }),
+    (0, class_validator_1.IsArray)(),
+    __metadata("design:type", Array)
+], ProductBulkSuggestionsDto.prototype, "suggestions", void 0);
+class ApplyBulkSuggestionsNewDto {
+    products;
+}
+exports.ApplyBulkSuggestionsNewDto = ApplyBulkSuggestionsNewDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Array of products with their selected suggestions',
+        type: [ProductBulkSuggestionsDto],
+    }),
+    (0, class_validator_1.IsArray)(),
+    __metadata("design:type", Array)
+], ApplyBulkSuggestionsNewDto.prototype, "products", void 0);
+class ProductAnalysisInputDto {
+    productId;
+    productTitle;
+    productDescription;
+}
+exports.ProductAnalysisInputDto = ProductAnalysisInputDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Shopify product ID',
+        example: 'gid://shopify/Product/123456789',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductAnalysisInputDto.prototype, "productId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product title',
+        example: 'RYZE Gums Frosty Mint Flavour - 2mg',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductAnalysisInputDto.prototype, "productTitle", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product description',
+        example: 'RYZE is a sugar free gum that helps manage your cravings...',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductAnalysisInputDto.prototype, "productDescription", void 0);
+class ProductSeoAnalysisInputDto {
+    productId;
+    productSeoTitle;
+    productSeoDescription;
+}
+exports.ProductSeoAnalysisInputDto = ProductSeoAnalysisInputDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Shopify product ID',
+        example: 'gid://shopify/Product/123456789',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductSeoAnalysisInputDto.prototype, "productId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product SEO title',
+        example: 'RYZE Sugar free Gums Frosty Mint Flavor - 2mg',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductSeoAnalysisInputDto.prototype, "productSeoTitle", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product SEO description',
+        example: 'Buy RYZE Sugar Free Gums Frosty Mint Flavor- 2mg to help you stop smoking...',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductSeoAnalysisInputDto.prototype, "productSeoDescription", void 0);
+class ProductImageAnalysisInputDto {
+    productId;
+    productImageId;
+    productImageAltText;
+}
+exports.ProductImageAnalysisInputDto = ProductImageAnalysisInputDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Shopify product ID',
+        example: 'gid://shopify/Product/123456789',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductImageAnalysisInputDto.prototype, "productId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product image ID',
+        example: 'gid://shopify/ProductImage/123456789',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductImageAnalysisInputDto.prototype, "productImageId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product image alt text',
+        example: 'RYZE nicotine gum frosty mint flavor package',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductImageAnalysisInputDto.prototype, "productImageAltText", void 0);
+class ProductMetaFieldAnalysisInputDto {
+    productId;
+    productMetaId;
+    productMetaValue;
+}
+exports.ProductMetaFieldAnalysisInputDto = ProductMetaFieldAnalysisInputDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Shopify product ID',
+        example: 'gid://shopify/Product/123456789',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductMetaFieldAnalysisInputDto.prototype, "productId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product metafield ID',
+        example: 'gid://shopify/Metafield/123456789',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductMetaFieldAnalysisInputDto.prototype, "productMetaId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product metafield value',
+        example: 'RYZE Sugar free Gums Frosty Mint Flavor - 2mg',
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ProductMetaFieldAnalysisInputDto.prototype, "productMetaValue", void 0);
+class AnalysisResultDto {
+    score;
+    suggestions;
+    analysisType;
+    feedback;
+}
+exports.AnalysisResultDto = AnalysisResultDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Analysis score out of 100',
+        example: 85,
+        minimum: 0,
+        maximum: 100,
+    }),
+    __metadata("design:type", Number)
+], AnalysisResultDto.prototype, "score", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Array of suggestions from the analysis',
+        type: [SuggestionDto],
+    }),
+    __metadata("design:type", Array)
+], AnalysisResultDto.prototype, "suggestions", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Analysis type identifier',
+        example: 'product-content',
+    }),
+    __metadata("design:type", String)
+], AnalysisResultDto.prototype, "analysisType", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Detailed analysis feedback',
+        example: 'The product title is well-optimized but could benefit from more specific keywords...',
+    }),
+    __metadata("design:type", String)
+], AnalysisResultDto.prototype, "feedback", void 0);
+class ParallelAnalysisResultDto {
+    productId;
+    overallScore;
+    productContentAnalysis;
+    seoMetadataAnalysis;
+    imageAnalysis;
+    metafieldsAnalysis;
+    allSuggestions;
+    executionTime;
+}
+exports.ParallelAnalysisResultDto = ParallelAnalysisResultDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Shopify product ID',
+        example: 'gid://shopify/Product/123456789',
+    }),
+    __metadata("design:type", String)
+], ParallelAnalysisResultDto.prototype, "productId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Overall SEO score out of 100',
+        example: 78,
+        minimum: 0,
+        maximum: 100,
+    }),
+    __metadata("design:type", Number)
+], ParallelAnalysisResultDto.prototype, "overallScore", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product content analysis result',
+        type: AnalysisResultDto,
+    }),
+    __metadata("design:type", AnalysisResultDto)
+], ParallelAnalysisResultDto.prototype, "productContentAnalysis", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'SEO metadata analysis result',
+        type: AnalysisResultDto,
+    }),
+    __metadata("design:type", AnalysisResultDto)
+], ParallelAnalysisResultDto.prototype, "seoMetadataAnalysis", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Image alt text analysis result',
+        type: AnalysisResultDto,
+    }),
+    __metadata("design:type", AnalysisResultDto)
+], ParallelAnalysisResultDto.prototype, "imageAnalysis", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Metafields analysis result',
+        type: AnalysisResultDto,
+    }),
+    __metadata("design:type", AnalysisResultDto)
+], ParallelAnalysisResultDto.prototype, "metafieldsAnalysis", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Combined suggestions from all analyses',
+        type: [SuggestionDto],
+    }),
+    __metadata("design:type", Array)
+], ParallelAnalysisResultDto.prototype, "allSuggestions", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Analysis execution time in milliseconds',
+        example: 2500,
+    }),
+    __metadata("design:type", Number)
+], ParallelAnalysisResultDto.prototype, "executionTime", void 0);
+class ParallelAnalysisInputDto {
+    productContent;
+    seoMetadata;
+    images;
+    metafields;
+}
+exports.ParallelAnalysisInputDto = ParallelAnalysisInputDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Product content analysis input',
+        type: ProductAnalysisInputDto,
+    }),
+    __metadata("design:type", ProductAnalysisInputDto)
+], ParallelAnalysisInputDto.prototype, "productContent", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'SEO metadata analysis input',
+        type: ProductSeoAnalysisInputDto,
+    }),
+    __metadata("design:type", ProductSeoAnalysisInputDto)
+], ParallelAnalysisInputDto.prototype, "seoMetadata", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Image analysis inputs',
+        type: [ProductImageAnalysisInputDto],
+    }),
+    __metadata("design:type", Array)
+], ParallelAnalysisInputDto.prototype, "images", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Metafields analysis inputs',
+        type: [ProductMetaFieldAnalysisInputDto],
+    }),
+    __metadata("design:type", Array)
+], ParallelAnalysisInputDto.prototype, "metafields", void 0);
 //# sourceMappingURL=seo.dto.js.map

@@ -171,3 +171,244 @@ export class ApplyBulkSuggestionsDto {
   @IsArray()
   suggestions: ApplySuggestionDto[];
 }
+
+export class ProductBulkSuggestionsDto {
+  @ApiProperty({
+    description: 'Shopify product ID',
+    example: 'gid://shopify/Product/123456789',
+  })
+  @IsString()
+  productId: string;
+
+  @ApiProperty({
+    description: 'Product title',
+    example: 'Premium Quality T-Shirt',
+  })
+  @IsString()
+  title: string;
+
+  @ApiProperty({
+    description: 'Product handle/slug',
+    example: 'premium-quality-t-shirt',
+  })
+  @IsString()
+  handle: string;
+
+  @ApiProperty({
+    description: 'Array of selected suggestions for this product',
+    type: [ApplySuggestionDto],
+  })
+  @IsArray()
+  suggestions: ApplySuggestionDto[];
+}
+
+export class ApplyBulkSuggestionsNewDto {
+  @ApiProperty({
+    description: 'Array of products with their selected suggestions',
+    type: [ProductBulkSuggestionsDto],
+  })
+  @IsArray()
+  products: ProductBulkSuggestionsDto[];
+}
+
+// New DTOs for Parallel SEO Analysis Workers
+
+// Input DTOs for each worker
+export class ProductAnalysisInputDto {
+  @ApiProperty({
+    description: 'Shopify product ID',
+    example: 'gid://shopify/Product/123456789',
+  })
+  @IsString()
+  productId: string;
+
+  @ApiProperty({
+    description: 'Product title',
+    example: 'RYZE Gums Frosty Mint Flavour - 2mg',
+  })
+  @IsString()
+  productTitle: string;
+
+  @ApiProperty({
+    description: 'Product description',
+    example: 'RYZE is a sugar free gum that helps manage your cravings...',
+  })
+  @IsString()
+  productDescription: string;
+}
+
+export class ProductSeoAnalysisInputDto {
+  @ApiProperty({
+    description: 'Shopify product ID',
+    example: 'gid://shopify/Product/123456789',
+  })
+  @IsString()
+  productId: string;
+
+  @ApiProperty({
+    description: 'Product SEO title',
+    example: 'RYZE Sugar free Gums Frosty Mint Flavor - 2mg',
+  })
+  @IsString()
+  productSeoTitle: string;
+
+  @ApiProperty({
+    description: 'Product SEO description',
+    example: 'Buy RYZE Sugar Free Gums Frosty Mint Flavor- 2mg to help you stop smoking...',
+  })
+  @IsString()
+  productSeoDescription: string;
+}
+
+export class ProductImageAnalysisInputDto {
+  @ApiProperty({
+    description: 'Shopify product ID',
+    example: 'gid://shopify/Product/123456789',
+  })
+  @IsString()
+  productId: string;
+
+  @ApiProperty({
+    description: 'Product image ID',
+    example: 'gid://shopify/ProductImage/123456789',
+  })
+  @IsString()
+  productImageId: string;
+
+  @ApiProperty({
+    description: 'Product image alt text',
+    example: 'RYZE nicotine gum frosty mint flavor package',
+  })
+  @IsString()
+  productImageAltText: string;
+}
+
+export class ProductMetaFieldAnalysisInputDto {
+  @ApiProperty({
+    description: 'Shopify product ID',
+    example: 'gid://shopify/Product/123456789',
+  })
+  @IsString()
+  productId: string;
+
+  @ApiProperty({
+    description: 'Product metafield ID',
+    example: 'gid://shopify/Metafield/123456789',
+  })
+  @IsString()
+  productMetaId: string;
+
+  @ApiProperty({
+    description: 'Product metafield value',
+    example: 'RYZE Sugar free Gums Frosty Mint Flavor - 2mg',
+  })
+  @IsString()
+  productMetaValue: string;
+}
+
+// Analysis Result DTOs
+export class AnalysisResultDto {
+  @ApiProperty({
+    description: 'Analysis score out of 100',
+    example: 85,
+    minimum: 0,
+    maximum: 100,
+  })
+  score: number;
+
+  @ApiProperty({
+    description: 'Array of suggestions from the analysis',
+    type: [SuggestionDto],
+  })
+  suggestions: SuggestionDto[];
+
+  @ApiProperty({
+    description: 'Analysis type identifier',
+    example: 'product-content',
+  })
+  analysisType: string;
+
+  @ApiProperty({
+    description: 'Detailed analysis feedback',
+    example: 'The product title is well-optimized but could benefit from more specific keywords...',
+  })
+  feedback: string;
+}
+
+export class ParallelAnalysisResultDto {
+  @ApiProperty({
+    description: 'Shopify product ID',
+    example: 'gid://shopify/Product/123456789',
+  })
+  productId: string;
+
+  @ApiProperty({
+    description: 'Overall SEO score out of 100',
+    example: 78,
+    minimum: 0,
+    maximum: 100,
+  })
+  overallScore: number;
+
+  @ApiProperty({
+    description: 'Product content analysis result',
+    type: AnalysisResultDto,
+  })
+  productContentAnalysis: AnalysisResultDto;
+
+  @ApiProperty({
+    description: 'SEO metadata analysis result',
+    type: AnalysisResultDto,
+  })
+  seoMetadataAnalysis: AnalysisResultDto;
+
+  @ApiProperty({
+    description: 'Image alt text analysis result',
+    type: AnalysisResultDto,
+  })
+  imageAnalysis: AnalysisResultDto;
+
+  @ApiProperty({
+    description: 'Metafields analysis result',
+    type: AnalysisResultDto,
+  })
+  metafieldsAnalysis: AnalysisResultDto;
+
+  @ApiProperty({
+    description: 'Combined suggestions from all analyses',
+    type: [SuggestionDto],
+  })
+  allSuggestions: SuggestionDto[];
+
+  @ApiProperty({
+    description: 'Analysis execution time in milliseconds',
+    example: 2500,
+  })
+  executionTime: number;
+}
+
+export class ParallelAnalysisInputDto {
+  @ApiProperty({
+    description: 'Product content analysis input',
+    type: ProductAnalysisInputDto,
+  })
+  productContent: ProductAnalysisInputDto;
+
+  @ApiProperty({
+    description: 'SEO metadata analysis input',
+    type: ProductSeoAnalysisInputDto,
+  })
+  seoMetadata: ProductSeoAnalysisInputDto;
+
+  @ApiProperty({
+    description: 'Image analysis inputs',
+    type: [ProductImageAnalysisInputDto],
+  })
+  images: ProductImageAnalysisInputDto[];
+
+  @ApiProperty({
+    description: 'Metafields analysis inputs',
+    type: [ProductMetaFieldAnalysisInputDto],
+  })
+  metafields: ProductMetaFieldAnalysisInputDto[];
+}

@@ -58,18 +58,21 @@ function ScanResults() {
         id: product.productId,
         title: product.title,
         handle: product.handle,
-        image: { url: 'https://picsum.photos/80/80?random=' + Math.random(), altText: product.title },
+        // image: product.image,
         suggestions: product.suggestions.map(suggestion => ({
           id: suggestion.id,
           type: suggestion.type,
           priority: suggestion.priority,
           field: suggestion.field,
           current: suggestion.current,
+          score: suggestion.score,
           suggested: suggestion.suggested,
           reason: suggestion.reason,
           impact: suggestion.impact,
         }))
       }));
+
+      console.log(transformedResults, "TRANSFORMED RESULTS!!")
       
       setResults(transformedResults);
       setIsLoading(false);
@@ -183,24 +186,40 @@ function ScanResults() {
     setIsApplying(true);
     
     try {
-      // Transform selected suggestions to the format expected by the API
-      const suggestionsToApply = selectedSuggestions.map(suggestionId => {
-        // Find the suggestion in the results
+      // Group selected suggestions by product
+      const productSuggestionsMap = new Map();
+      
+      selectedSuggestions.forEach(suggestionId => {
         const suggestion = allSuggestions.find(s => s.id === suggestionId);
-        if (!suggestion) return null;
+        if (!suggestion) return;
         
-        return {
+        const productId = suggestion.productId;
+        if (!productSuggestionsMap.has(productId)) {
+          // Find the product details
+          const product = results.find(p => p.id === productId);
+          productSuggestionsMap.set(productId, {
+            productId: productId,
+            title: product?.title || '',
+            handle: product?.handle || '',
+            suggestions: []
+          });
+        }
+        
+        productSuggestionsMap.get(productId).suggestions.push({
           suggestionId: suggestion.id,
           productId: suggestion.productId,
           field: suggestion.field,
           value: suggestion.suggested,
-        };
-      }).filter(Boolean);
+        });
+      });
       
-      console.log('Applying suggestions:', suggestionsToApply);
+      // Convert map to array for API call
+      const productsToApply = Array.from(productSuggestionsMap.values());
       
-      // Make the API call
-      const response = await ApiService.applySEO(shop, suggestionsToApply);
+      console.log('Applying suggestions (new format):', productsToApply);
+      
+      // Make the API call using the new format
+      const response = await ApiService.applySEONew(shop, productsToApply);
       
       if (response.success) {
         // Mark suggestions as applied
@@ -218,7 +237,7 @@ function ScanResults() {
     } finally {
       setIsApplying(false);
     }
-  }, [selectedSuggestions, allSuggestions, shop]);
+  }, [selectedSuggestions, allSuggestions, shop, results]);
 
   const handleBackToDashboard = useCallback(() => {
     navigate('/');
@@ -367,6 +386,7 @@ if (!SEOSuggestionCard) {
                     const allActiveSuggestionsSelected = activeSuggestionIds.length > 0 && activeSuggestionIds.every(id => selectedSuggestions.includes(id));
                     const hasActiveSuggestions = activeSuggestionIds.length > 0;
                     
+                    console.log(product, "product on line 373 in scanresults")
                     return [
                       <Checkbox
                         checked={allActiveSuggestionsSelected}

@@ -20,15 +20,18 @@ const typeorm_2 = require("typeorm");
 const shop_entity_1 = require("../../entities/shop.entity");
 const scan_history_entity_1 = require("../../entities/scan-history.entity");
 const shopify_service_1 = require("../shopify/shopify.service");
+const simplified_seo_analysis_service_1 = require("./simplified-seo-analysis.service");
 let SeoService = SeoService_1 = class SeoService {
     shopRepository;
     scanHistoryRepository;
     shopifyService;
+    simplifiedSeoAnalysisService;
     logger = new common_1.Logger(SeoService_1.name);
-    constructor(shopRepository, scanHistoryRepository, shopifyService) {
+    constructor(shopRepository, scanHistoryRepository, shopifyService, simplifiedSeoAnalysisService) {
         this.shopRepository = shopRepository;
         this.scanHistoryRepository = scanHistoryRepository;
         this.shopifyService = shopifyService;
+        this.simplifiedSeoAnalysisService = simplifiedSeoAnalysisService;
     }
     async scanEntireStore(shopDomain) {
         try {
@@ -108,6 +111,7 @@ let SeoService = SeoService_1 = class SeoService {
             const errors = [];
             for (const suggestion of suggestions) {
                 try {
+                    console.log("TRYING TO UPDATE THE SUGGESTION: ", suggestion);
                     const result = await this.applySuggestionToShopify(shopDomain, shop.accessToken, suggestion);
                     results.push({ suggestion, result, success: true });
                 }
@@ -148,12 +152,21 @@ let SeoService = SeoService_1 = class SeoService {
         return products;
     }
     async analyzeProductsForSEO(products) {
-        return products.map(product => ({
-            productId: product.id,
-            title: product.title,
-            handle: product.handle,
-            suggestions: this.generateMockSuggestions(product),
-        }));
+        try {
+            this.logger.log(`Starting SEO analysis for ${products.length} products`);
+            const analysisResults = await this.simplifiedSeoAnalysisService.analyzeProductsSimplified(products);
+            this.logger.log(`Completed SEO analysis for ${products.length} products`);
+            return analysisResults;
+        }
+        catch (error) {
+            this.logger.error('Error in SEO analysis, falling back to mock suggestions', error);
+            return products.map(product => ({
+                productId: product.id,
+                title: product.title,
+                handle: product.handle,
+                suggestions: this.generateMockSuggestions(product),
+            }));
+        }
     }
     generateMockSuggestions(product) {
         const suggestions = [];
@@ -196,19 +209,77 @@ let SeoService = SeoService_1 = class SeoService {
         return suggestions;
     }
     async applySuggestionToShopify(shopDomain, accessToken, suggestion) {
-        switch (suggestion.field) {
-            case 'seo.title':
-            case 'seo.description':
-                return await this.shopifyService.updateProduct(shopDomain, accessToken, suggestion.productId, {
-                    seo: {
-                        [suggestion.field.split('.')[1]]: suggestion.value,
-                    },
-                });
-            case 'images.altText':
-                return { success: true, message: 'Alt text update not implemented yet' };
-            default:
-                throw new Error(`Unsupported suggestion field: ${suggestion.field}`);
+        try {
+            this.logger.log(`Applying suggestion for field: ${suggestion.field}, productId: ${suggestion.productId}`);
+            const currentProductResult = await this.shopifyService.fetchProductById(shopDomain, accessToken, suggestion.productId);
+            if (currentProductResult.errors || !currentProductResult.data?.product) {
+                throw new Error(`Failed to fetch current product: ${JSON.stringify(currentProductResult.errors)}`);
+            }
+            const currentProduct = currentProductResult.data.product;
+            switch (suggestion.field) {
+                case 'SEO Title':
+                case 'seo.title':
+                case 'Title Tag':
+                    this.logger.log(`Updating SEO title for product ${suggestion.productId} with value: ${suggestion.value}`);
+                    const seoTitleResult = await this.shopifyService.updateProduct(shopDomain, accessToken, suggestion.productId, {
+                        seo: {
+                            title: suggestion.value,
+                            description: currentProduct.seo?.description || '',
+                        },
+                    });
+                    this.logger.log(`SEO title update result:`, JSON.stringify(seoTitleResult, null, 2));
+                    return seoTitleResult;
+                case 'SEO Description':
+                case 'seo.description':
+                    return await this.shopifyService.updateProduct(shopDomain, accessToken, suggestion.productId, {
+                        seo: {
+                            title: currentProduct.seo?.title || '',
+                            description: suggestion.value,
+                        },
+                    });
+                case 'Title':
+                case 'Product Title':
+                    this.logger.log(`Updating product title for product ${suggestion.productId} with value: ${suggestion.value}`);
+                    return await this.shopifyService.updateProduct(shopDomain, accessToken, suggestion.productId, {
+                        title: suggestion.value,
+                    });
+                case 'Description':
+                    console.log("INSIDE SWITCH CASE DESCRIPTION : ", suggestion);
+                    console.log("OTHER INFO : ", accessToken, shopDomain);
+                    return await this.shopifyService.updateProduct(shopDomain, accessToken, suggestion.productId, {
+                        descriptionHtml: suggestion.value,
+                    });
+                case 'images.altText':
+                    const imageId = this.extractImageIdFromSuggestion(suggestion);
+                    if (!imageId) {
+                        throw new Error(`Image ID not found in suggestion ID: ${suggestion.suggestionId}. Alt text updates require image ID.`);
+                    }
+                    return await this.shopifyService.updateProductImage(shopDomain, accessToken, imageId, suggestion.value);
+                case 'Meta Description':
+                    return await this.shopifyService.updateProductMetafield(shopDomain, accessToken, suggestion.productId, 'seo', 'meta_description', suggestion.value, 'single_line_text_field');
+                case 'Structured Data':
+                    return await this.shopifyService.updateProductMetafield(shopDomain, accessToken, suggestion.productId, 'seo', 'structured_data', suggestion.value, 'json');
+                case 'Product Details':
+                    return await this.shopifyService.updateProductMetafield(shopDomain, accessToken, suggestion.productId, 'seo', 'product_details', suggestion.value, 'multi_line_text_field');
+                default:
+                    throw new Error(`Unsupported suggestion field: ${suggestion.field}`);
+            }
         }
+        catch (error) {
+            this.logger.error(`Error applying suggestion for field ${suggestion.field}:`, error);
+            throw error;
+        }
+    }
+    extractImageIdFromSuggestion(suggestion) {
+        if (suggestion.suggestionId.includes('gid://shopify/ProductImage/')) {
+            const match = suggestion.suggestionId.match(/gid:\/\/shopify\/ProductImage\/(\d+)/);
+            return match ? `gid://shopify/ProductImage/${match[1]}` : null;
+        }
+        if (suggestion.suggestionId.match(/^alt-text-\d+$/)) {
+            this.logger.warn(`Cannot extract image ID from suggestion ID: ${suggestion.suggestionId}. Consider including image ID in suggestion ID.`);
+            return null;
+        }
+        return null;
     }
     async saveScanHistory(shopDomain, scanType, results) {
         try {
@@ -236,6 +307,7 @@ exports.SeoService = SeoService = SeoService_1 = __decorate([
     __param(1, (0, typeorm_1.InjectRepository)(scan_history_entity_1.ScanHistory)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
-        shopify_service_1.ShopifyService])
+        shopify_service_1.ShopifyService,
+        simplified_seo_analysis_service_1.SimplifiedSeoAnalysisService])
 ], SeoService);
 //# sourceMappingURL=seo.service.js.map
