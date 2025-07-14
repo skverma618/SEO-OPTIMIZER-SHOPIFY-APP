@@ -9,6 +9,7 @@ import { BrandMapping, DEFAULT_BRAND_MAPPING } from '../../interfaces/brand.inte
 
 export interface SimplifiedSuggestion {
   id: string;
+  imageId?: string;
   type: string;
   priority: string;
   score: number; // This will be calculated based on priority/type for suggestion ranking
@@ -24,6 +25,7 @@ export interface SimplifiedProductAnalysis {
   productId: string;
   title: string;
   handle: string;
+  imageUrl?: string;
   overallScore?: number;
   fieldScores?: Array<{ field: string; score: number; description: string }>;
   suggestions: SimplifiedSuggestion[];
@@ -90,8 +92,12 @@ export class SimplifiedSeoAnalysisService {
         // Generate unique ID by combining productId, type, field, and index
         const uniqueId = `${result.productId}-${suggestion.type}-${suggestion.field.replace(/\s+/g, '-').toLowerCase()}-${index}`;
         
+        // Extract imageId for image-related suggestions
+        const imageId = this.extractImageIdFromSuggestion(suggestion, originalProduct);
+        
         return {
           id: uniqueId,
+          imageId: imageId,
           type: suggestion.type,
           priority: suggestion.priority,
           score: fieldScore || this.calculateSuggestionScore(suggestion.priority, suggestion.type), // Use LLM field score or fallback
@@ -108,6 +114,7 @@ export class SimplifiedSeoAnalysisService {
         productId: result.productId,
         title: originalProduct.title,
         handle: this.generateHandle(originalProduct.title),
+        imageUrl: this.extractPrimaryImageUrl(originalProduct),
         overallScore: result.overallScore,
         fieldScores: allFieldScores,
         suggestions,
@@ -238,5 +245,86 @@ export class SimplifiedSeoAnalysisService {
     }
 
     return null; // No matching field score found
+  }
+
+  /**
+   * Extract the primary/featured image URL from Shopify product data
+   */
+  private extractPrimaryImageUrl(shopifyProduct: any): string | undefined {
+    // Handle different image data structures
+    if (shopifyProduct.images?.edges && shopifyProduct.images.edges.length > 0) {
+      // GraphQL format - get first image
+      const firstImage = shopifyProduct.images.edges[0]?.node;
+      if (firstImage) {
+        return firstImage.url || firstImage.originalSrc || firstImage.src;
+      }
+    } else if (shopifyProduct.images && Array.isArray(shopifyProduct.images) && shopifyProduct.images.length > 0) {
+      // REST API format - get first image
+      const firstImage = shopifyProduct.images[0];
+      if (firstImage) {
+        return firstImage.url || firstImage.originalSrc || firstImage.src;
+      }
+    }
+
+    // Fallback: check for featured_image property (common in some Shopify formats)
+    if (shopifyProduct.featured_image) {
+      return shopifyProduct.featured_image.url || shopifyProduct.featured_image.originalSrc || shopifyProduct.featured_image.src || shopifyProduct.featured_image;
+    }
+
+    // Fallback: check for image property (single image)
+    if (shopifyProduct.image) {
+      return shopifyProduct.image.url || shopifyProduct.image.originalSrc || shopifyProduct.image.src || shopifyProduct.image;
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Extract image ID from suggestion by matching with original product data
+   */
+  private extractImageIdFromSuggestion(suggestion: any, originalProduct: any): string | undefined {
+    // Check if suggestion already has imageId field
+    if (suggestion.imageId) {
+      return suggestion.imageId;
+    }
+
+    // For image-related suggestions, find the matching image ID
+    if (suggestion.type === 'image-alt-text' || suggestion.field === 'images.altText') {
+      // Try to match by imageUrl if available
+      if (suggestion.imageUrl) {
+        const imageId = this.findImageIdByUrl(suggestion.imageUrl, originalProduct);
+        if (imageId) {
+          return imageId;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Find image ID by matching the image URL in the original product data
+   */
+  private findImageIdByUrl(imageUrl: string, originalProduct: any): string | undefined {
+    // Handle GraphQL format
+    if (originalProduct.images?.edges) {
+      for (const edge of originalProduct.images.edges) {
+        const image = edge.node;
+        if (image && (image.url === imageUrl || image.originalSrc === imageUrl || image.src === imageUrl)) {
+          return image.id;
+        }
+      }
+    }
+
+    // Handle REST API format
+    if (originalProduct.images && Array.isArray(originalProduct.images)) {
+      for (const image of originalProduct.images) {
+        if (image.url === imageUrl || image.originalSrc === imageUrl || image.src === imageUrl) {
+          return image.id;
+        }
+      }
+    }
+
+    return undefined;
   }
 }

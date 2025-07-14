@@ -56,6 +56,13 @@ export class SuggestionDto {
   id: string;
 
   @ApiProperty({
+    description: 'Image ID for image-related suggestions (clean ID without prefixes)',
+    example: 'gid://shopify/ProductImage/50092349358364',
+    required: false,
+  })
+  imageId?: string;
+
+  @ApiProperty({
     description: 'Type of SEO suggestion',
     enum: SuggestionType,
     example: SuggestionType.TITLE,
