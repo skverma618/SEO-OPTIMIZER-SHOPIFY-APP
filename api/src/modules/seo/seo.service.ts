@@ -327,7 +327,9 @@ export class SeoService {
 
         case 'images.altText':
           // Extract image ID from suggestion ID
-          const imageId = this.extractImageIdFromSuggestion(suggestion);
+          // const imageId = this.extractImageIdFromSuggestion(suggestion);
+          const imageId = suggestion?.imageId;
+          
           if (!imageId) {
             throw new Error(`Image ID not found in suggestion ID: ${suggestion.suggestionId}. Alt text updates require image ID.`);
           }

@@ -251,7 +251,7 @@ let SeoService = SeoService_1 = class SeoService {
                         descriptionHtml: suggestion.value,
                     });
                 case 'images.altText':
-                    const imageId = this.extractImageIdFromSuggestion(suggestion);
+                    const imageId = suggestion?.imageId;
                     if (!imageId) {
                         throw new Error(`Image ID not found in suggestion ID: ${suggestion.suggestionId}. Alt text updates require image ID.`);
                     }

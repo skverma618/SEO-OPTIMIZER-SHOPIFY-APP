@@ -213,6 +213,7 @@ __decorate([
 ], ScanResultDto.prototype, "results", void 0);
 class ApplySuggestionDto {
     suggestionId;
+    imageId;
     productId;
     field;
     value;
@@ -226,6 +227,14 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ApplySuggestionDto.prototype, "suggestionId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: "Image ID on Shopify",
+        example: ""
+    }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ApplySuggestionDto.prototype, "imageId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Shopify product ID',

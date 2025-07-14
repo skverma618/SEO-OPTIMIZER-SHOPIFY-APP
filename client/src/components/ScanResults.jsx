@@ -208,6 +208,7 @@ function ScanResults() {
         
         productSuggestionsMap.get(productId).suggestions.push({
           suggestionId: suggestion.id,
+          imageId: suggestion.imageId,
           productId: suggestion.productId,
           field: suggestion.field,
           value: suggestion.suggested,

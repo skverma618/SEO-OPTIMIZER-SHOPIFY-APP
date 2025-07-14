@@ -49,6 +49,7 @@ export declare class ScanResultDto {
 }
 export declare class ApplySuggestionDto {
     suggestionId: string;
+    imageId?: string;
     productId: string;
     field: string;
     value: string;
