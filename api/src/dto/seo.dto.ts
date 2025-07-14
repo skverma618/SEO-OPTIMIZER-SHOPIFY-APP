@@ -176,6 +176,13 @@ export class ApplySuggestionDto {
   suggestionId: string;
 
   @ApiProperty({
+    description: "Image ID on Shopify",
+    example: ""
+  })
+  @IsString()
+  imageId?: string
+
+  @ApiProperty({
     description: 'Shopify product ID',
     example: 'gid://shopify/Product/123456789',
   })

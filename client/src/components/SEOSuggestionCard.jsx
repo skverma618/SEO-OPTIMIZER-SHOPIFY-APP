@@ -265,7 +265,7 @@ function SEOSuggestionCard({
           </BlockStack>
 
           {/* Image display for alt-text suggestions */}
-          {suggestion.type === 'alt-text' && (
+          {suggestion.type === 'image-alt-text' && (
             <BlockStack gap="200">
               <Text variant="bodySm" fontWeight="bold">
                 Image:

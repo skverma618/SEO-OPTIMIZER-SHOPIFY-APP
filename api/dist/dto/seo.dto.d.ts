@@ -25,6 +25,7 @@ export declare class ScanProductsDto {
 }
 export declare class SuggestionDto {
     id: string;
+    imageId?: string;
     type: string;
     priority: SuggestionPriority;
     field: string;
@@ -48,6 +49,7 @@ export declare class ScanResultDto {
 }
 export declare class ApplySuggestionDto {
     suggestionId: string;
+    imageId?: string;
     productId: string;
     field: string;
     value: string;
