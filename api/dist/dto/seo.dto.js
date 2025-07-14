@@ -55,6 +55,7 @@ __decorate([
 ], ScanProductsDto.prototype, "productIds", void 0);
 class SuggestionDto {
     id;
+    imageId;
     type;
     priority;
     field;
@@ -72,6 +73,14 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], SuggestionDto.prototype, "id", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Image ID for image-related suggestions (clean ID without prefixes)',
+        example: 'gid://shopify/ProductImage/50092349358364',
+        required: false,
+    }),
+    __metadata("design:type", String)
+], SuggestionDto.prototype, "imageId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Type of SEO suggestion',

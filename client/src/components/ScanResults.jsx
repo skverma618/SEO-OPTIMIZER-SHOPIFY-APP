@@ -58,7 +58,7 @@ function ScanResults() {
         id: product.productId,
         title: product.title,
         handle: product.handle,
-        // image: product.image,
+        image: product.imageUrl,
         suggestions: product.suggestions.map(suggestion => ({
           id: suggestion.id,
           type: suggestion.type,
@@ -397,7 +397,7 @@ if (!SEOSuggestionCard) {
                       />,
                       <InlineStack gap="300" align="start">
                         <Avatar
-                          source={product.image?.url}
+                          source={product.image}
                           alt={product.image?.altText || product.title}
                           size="medium"
                         />
