@@ -20,6 +20,13 @@ CONSISTENCY CHECK:
 
 Rate each field 0-100 and provide suggestions with actual improved content that reflects the brand identity.
 
+MARKDOWN FORMATTING FOR SUGGESTIONS:
+- Format the "suggested" field content using Markdown with highlighted key changes
+- Use **bold text** for new or significantly improved content sections
+- Use <span style="color: green">text</span> for additions and enhancements
+- Keep existing good content as normal text
+- Ensure the formatting clearly highlights what's being changed or added
+
 Response format:
 - overallScore: number (0-100)
 - fieldScores: array with field, score, description
@@ -34,6 +41,13 @@ SEO Description: "{productSeoDescription}"
 
 Rate each field 0-100 and provide suggestions with actual improved content.
 
+MARKDOWN FORMATTING FOR SUGGESTIONS:
+- Format the "suggested" field content using Markdown with highlighted key changes
+- Use **bold text** for new or significantly improved content sections
+- Use <span style="color: green">text</span> for additions and enhancements
+- Keep existing good content as normal text
+- Ensure the formatting clearly highlights what's being changed or added
+
 Required format:
 - overallScore: number 0-100
 - fieldScores: array with field, score, description
@@ -45,6 +59,13 @@ Required format:
 {imagesData}
 
 Rate each image field 0-100 and provide suggestions with actual improved content.
+
+MARKDOWN FORMATTING FOR SUGGESTIONS:
+- Format the "suggested" field content using Markdown with highlighted key changes
+- Use **bold text** for new or significantly improved content sections
+- Use <span style="color: green">text</span> for additions and enhancements
+- Keep existing good content as normal text
+- Ensure the formatting clearly highlights what's being changed or added
 
 Required format:
 - overallScore: number 0-100
@@ -59,6 +80,13 @@ IMPORTANT: For each suggestion, include the imageUrl and imageId from the corres
 {metafieldsData}
 
 Rate each metafield 0-100 and provide suggestions with actual improved content.
+
+MARKDOWN FORMATTING FOR SUGGESTIONS:
+- Format the "suggested" field content using Markdown with highlighted key changes
+- Use **bold text** for new or significantly improved content sections
+- Use <span style="color: green">text</span> for additions and enhancements
+- Keep existing good content as normal text
+- Ensure the formatting clearly highlights what's being changed or added
 
 Required format:
 - overallScore: number 0-100
