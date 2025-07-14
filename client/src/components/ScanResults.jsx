@@ -64,6 +64,7 @@ function ScanResults() {
           type: suggestion.type,
           priority: suggestion.priority,
           field: suggestion.field,
+          imageId: suggestion.imageId,
           imageUrl: suggestion?.imageUrl || '',
           current: suggestion.current,
           score: suggestion.score,

@@ -251,11 +251,18 @@ let SeoService = SeoService_1 = class SeoService {
                         descriptionHtml: suggestion.value,
                     });
                 case 'images.altText':
+                    this.logger.log(`Updating image alt text for product ${suggestion.productId}`);
+                    this.logger.log(`Suggestion details:`, JSON.stringify(suggestion, null, 2));
                     const imageId = suggestion?.imageId;
+                    this.logger.log(`Extracted imageId: ${imageId}`);
+                    this.logger.log(`Alt text value to set: ${suggestion.value}`);
                     if (!imageId) {
+                        this.logger.error(`Image ID not found in suggestion. SuggestionId: ${suggestion.suggestionId}, ImageId: ${imageId}`);
                         throw new Error(`Image ID not found in suggestion ID: ${suggestion.suggestionId}. Alt text updates require image ID.`);
                     }
-                    return await this.shopifyService.updateProductImage(shopDomain, accessToken, imageId, suggestion.value);
+                    const imageUpdateResult = await this.shopifyService.updateProductImage(shopDomain, accessToken, imageId, suggestion.value);
+                    this.logger.log(`Image alt text update result:`, JSON.stringify(imageUpdateResult, null, 2));
+                    return imageUpdateResult;
                 case 'Meta Description':
                     return await this.shopifyService.updateProductMetafield(shopDomain, accessToken, suggestion.productId, 'seo', 'meta_description', suggestion.value, 'single_line_text_field');
                 case 'Structured Data':
